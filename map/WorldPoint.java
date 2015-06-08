@@ -12,4 +12,8 @@ public class WorldPoint {
 
   public void x(int x) { this.x = x; }
   public void y(int y) { this.y = y; }
+
+  public String toString() {
+    return "(" + x + ", " + y + ")";
+  }
 }

@@ -1,5 +1,6 @@
 package map;
 
+import map.cells.Cell;
 import static java.lang.Math.abs;
 
 public class Map {
@@ -13,6 +14,11 @@ public class Map {
     quadrants[1] = new Quadrant(CURRENT_MAX_SIZE);
     quadrants[2] = new Quadrant(CURRENT_MAX_SIZE);
     quadrants[3] = new Quadrant(CURRENT_MAX_SIZE);
+  }
+
+  public Cell fetchCell(WorldPoint p) {
+    LogicalPoint l = worldToLogical(p);
+    return quadrants[l.q()].getCell(l.x(), l.y());
   }
 
   public void printMap() {
