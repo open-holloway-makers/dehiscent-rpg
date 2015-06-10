@@ -4,9 +4,9 @@ import core.Player;
 
 public class BlankCell extends Cell {
   
-  public char mapIcon = ' ';
-
-  public BlankCell() { super(); };
+  public BlankCell() { 
+    super(' '); 
+  };
 
   @Override
   public boolean goNorth() {

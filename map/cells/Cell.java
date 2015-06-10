@@ -4,9 +4,11 @@ import core.Player;
 
 public abstract class Cell {
 
-  public char mapIcon = '?';
+  public char mapIcon;
 
-  public Cell() {}
+  public Cell(char mapIcon) {
+    this.mapIcon = mapIcon;
+  }
 
   public boolean goNorth() {
     return true;

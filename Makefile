@@ -4,6 +4,6 @@ all: Dehiscent.class
 
 run: ; java Dehiscent
 
-clean: ; rm -rf *.class
+clean: ; find . -name "*.class" -type f -delete
 
 %.class: %.java ; $(JCC) $<

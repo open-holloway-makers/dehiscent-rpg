@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class Dehiscent {
 
   public static void main(String[] args) {
-    Map overworld = new Map();
+    Map overworld = createMap();   
     Player p = new Player();
     Scanner in = new Scanner(System.in);
 
@@ -54,5 +54,10 @@ public class Dehiscent {
         currentCell = overworld.fetchCell(p.getPosition());
       }
     }
+  }
+
+  public static createMap() {
+    Map overworld = new Map();
+
   }
 }
