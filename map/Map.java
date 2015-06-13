@@ -21,6 +21,11 @@ public class Map {
     return quadrants[l.q()].getCell(l.x(), l.y());
   }
 
+  public void setCell(int x, int y, Cell cell) {
+    LogicalPoint l = worldToLogical(new WorldPoint(x, y));
+    quadrants[l.q()].setCell(l.x(), l.y(), cell);
+  }
+
   public void printMap() {
     int x, y;
     for (y = CURRENT_MAX_SIZE - 1; y >= 0; y--) {

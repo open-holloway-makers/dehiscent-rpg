@@ -56,8 +56,9 @@ public class Dehiscent {
     }
   }
 
-  public static createMap() {
+  public static Map createMap() {
     Map overworld = new Map();
-
+    overworld.setCell(0, 0, new HomeCell());
+    return overworld;
   }
 }

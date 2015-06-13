@@ -4,9 +4,7 @@ import core.Player;
 
 public class HomeCell extends Cell {
 
-  public char mapIcon = 'O';
-
-  public HomeCell() { super(); };
+  public HomeCell() { super('O'); };
 
   @Override
   public boolean goNorth() {
@@ -30,12 +28,14 @@ public class HomeCell extends Cell {
     return true;
   }
 
-  @Override public Player explore(Player p) {
+  @Override 
+  public Player explore(Player p) {
     System.out.println("There's nothing of interest here...");
     return p;
   }
 
-  @Override public Player event(Player p) {
+  @Override 
+  public Player event(Player p) {
     System.out.println("There's nothing here...");
     return p;
   }

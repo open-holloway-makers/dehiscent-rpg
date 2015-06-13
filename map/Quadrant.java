@@ -22,6 +22,10 @@ public class Quadrant {
     return cells[y][x];
   }
 
+  public void setCell(int x, int y, Cell cell) {
+    cells[y][x] = (Cell)cell;
+  }
+
   public void printCell(int x, int y) {
     System.out.print(cells[y][x].mapIcon);
   }
