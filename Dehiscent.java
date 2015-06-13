@@ -11,6 +11,8 @@ public class Dehiscent {
     Scanner in = new Scanner(System.in);
 
     for (;;) {
+      overworld.printKnownMap(p);
+
       Cell currentCell = overworld.fetchCell(p.getPosition());
       p = currentCell.event(p);
 
@@ -38,7 +40,7 @@ public class Dehiscent {
           }
         } else if (decision.startsWith("view")) {
           if (decision.contains("map")) {
-            overworld.printMap();
+            overworld.printKnownMap(p);
           }
           if (decision.contains("position")) {
             System.out.println("You're at " + p.getPosition().toString());
@@ -58,7 +60,10 @@ public class Dehiscent {
 
   public static Map createMap() {
     Map overworld = new Map();
-    overworld.setCell(0, 0, new HomeCell());
+    overworld.setCell(0, 0, new OneTest());
+    overworld.setCell(-1, 0, new TwoTest());
+    overworld.setCell(-1, -1, new ThreeTest());
+    overworld.setCell(0, -1, new FourTest());
     return overworld;
   }
 }

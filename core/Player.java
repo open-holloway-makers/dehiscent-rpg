@@ -24,16 +24,20 @@ public class Player {
   public void setDex(int x) { dexterity = x; }
   public void setInt(int x) { intelligence = x; }
 
+  public void setPosition(int x, int y) { 
+    position = new WorldPoint(x, y);
+    visitedPoints.add(position);
+  }
+
   public int getVit() { return vitality; }
   public int getStr() { return strength; }
   public int getDex() { return dexterity; }
   public int getInt() { return intelligence; }
 
   public WorldPoint getPosition() { return position; }
-  public void setPosition(int x, int y) { 
-    position = new WorldPoint(x, y);
-    visitedPoints.add(position);
-  }
+
+  public List<WorldPoint> getVisited() { return visitedPoints; }
+
 
   public void goNorth() {
     setPosition(position.x(), position.y() - 1);

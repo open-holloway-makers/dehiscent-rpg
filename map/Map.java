@@ -27,29 +27,43 @@ public class Map {
     quadrants[l.q()].setCell(l.x(), l.y(), cell);
   }
 
+  // This is the most inefficient thing every conceived by humans
   public void printKnownMap(Player player) {
     int x, y;
-    WorldPoint p = player.getPosition();
+    LogicalPoint p = worldToLogical(player.getPosition());
     for (y = CURRENT_MAX_SIZE - 1; y >= 0; y--) {
       for (x = CURRENT_MAX_SIZE - 1; x >= 0; x--) {
-        quadrants[2].printCell(x, y);
+        printKnownCell(2, x, y, player);
       }
       for (x = 0; x < CURRENT_MAX_SIZE; x++) {
-        quadrants[3].printCell(x, y);
+        printKnownCell(3, x, y, player);
       }
       System.out.println();
     }
     for (y = 0; y < CURRENT_MAX_SIZE; y++) {
       for (x = CURRENT_MAX_SIZE - 1; x >= 0; x--) {
-        quadrants[1].printCell(x, y);
+        printKnownCell(1, x, y, player);
       }
       for (x = 0; x < CURRENT_MAX_SIZE; x++) {
-        quadrants[0].printCell(x, y);
+        printKnownCell(0, x, y, player);
       }
       System.out.println();
     }
   }
 
+  private void printKnownCell(int q, int x, int y, Player player) {
+    LogicalPoint p = worldToLogical(player.getPosition());
+    if (p.q() == q && p.x() == x && p.y() == y) {
+      System.out.print('x');
+    } else if (player.getVisited().contains(new WorldPoint(x, y))) {
+      quadrants[q].printCell(x, y);
+    } else {
+      System.out.print(' ');
+    }
+  }
+
+  // 23
+  // 10
   public void printMap() {
     int x, y;
     for (y = CURRENT_MAX_SIZE - 1; y >= 0; y--) {

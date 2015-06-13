@@ -2,7 +2,7 @@ JCC = javac
 
 all: Dehiscent.class
 
-run: ; java Dehiscent
+run: ; make clean && make && java Dehiscent
 
 clean: ; find . -name "*.class" -type f -delete
 
