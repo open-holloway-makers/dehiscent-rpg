@@ -2,9 +2,9 @@ package map.cells;
 
 import core.Player;
 
-public class HomeCell extends Cell {
+public class HomeCell implements Cell {
 
-  public HomeCell() { super('O'); };
+  public char getMapIcon() { return 'O'; }
 
   @Override
   public boolean goNorth() {

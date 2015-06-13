@@ -1,5 +1,6 @@
 package map;
 
+import core.Player;
 import map.cells.Cell;
 import static java.lang.Math.abs;
 
@@ -26,6 +27,29 @@ public class Map {
     quadrants[l.q()].setCell(l.x(), l.y(), cell);
   }
 
+  public void printKnownMap(Player player) {
+    int x, y;
+    WorldPoint p = player.getPosition();
+    for (y = CURRENT_MAX_SIZE - 1; y >= 0; y--) {
+      for (x = CURRENT_MAX_SIZE - 1; x >= 0; x--) {
+        quadrants[2].printCell(x, y);
+      }
+      for (x = 0; x < CURRENT_MAX_SIZE; x++) {
+        quadrants[3].printCell(x, y);
+      }
+      System.out.println();
+    }
+    for (y = 0; y < CURRENT_MAX_SIZE; y++) {
+      for (x = CURRENT_MAX_SIZE - 1; x >= 0; x--) {
+        quadrants[1].printCell(x, y);
+      }
+      for (x = 0; x < CURRENT_MAX_SIZE; x++) {
+        quadrants[0].printCell(x, y);
+      }
+      System.out.println();
+    }
+  }
+
   public void printMap() {
     int x, y;
     for (y = CURRENT_MAX_SIZE - 1; y >= 0; y--) {
@@ -44,7 +68,7 @@ public class Map {
       for (x = 0; x < CURRENT_MAX_SIZE; x++) {
         quadrants[0].printCell(x, y);
       }
-    System.out.println();
+      System.out.println();
     }
   }
 

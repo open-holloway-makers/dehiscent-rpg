@@ -2,34 +2,21 @@ package map.cells;
 
 import core.Player;
 
-public abstract class Cell {
+public interface Cell {
 
-  public char mapIcon;
+  public default char getMapIcon() { return '?'; }
 
-  public Cell(char mapIcon) {
-    this.mapIcon = mapIcon;
-  }
-
-  public boolean goNorth() {
-    return true;
-  }
-
-  public boolean goEast() {
-    return true;
-  }
-
-  public boolean goWest() {
+  public Player explore(Player p);
+  public Player event(Player p);
+  
+  public default boolean goNorth() { return true; }
+  public default boolean goSouth() { return true; }
+  public default boolean goEast()  { return true; }
+  public default boolean goWest()  {
     // Life is peaceful there
     // In the open air
     // Where the skies are blue
     // This is what we're gonna do
     return true;
   }
-
-  public boolean goSouth() {
-    return true;
-  }
-
-  public abstract Player explore(Player p);
-  public abstract Player event(Player p);
 }

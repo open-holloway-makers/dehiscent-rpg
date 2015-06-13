@@ -2,11 +2,12 @@ package map.cells;
 
 import core.Player;
 
-public class BlankCell extends Cell {
+public class BlankCell implements Cell {
   
   public BlankCell() { 
-    super(' '); 
-  };
+  }; 
+
+  public char getMapIcon() { return ' '; }
 
   @Override
   public boolean goNorth() {

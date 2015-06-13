@@ -10,7 +10,7 @@ public class Quadrant {
 
   public Quadrant(int size) {
     this.size = size;
-    cells = new BlankCell[16][16];
+    cells = new Cell[16][16];
     for (int y = 0; y < size; y++) {
       for (int x = 0; x < size; x++) {
         cells[y][x] = new BlankCell();
@@ -23,10 +23,10 @@ public class Quadrant {
   }
 
   public void setCell(int x, int y, Cell cell) {
-    cells[y][x] = (Cell)cell;
+    cells[y][x] = cell;
   }
 
   public void printCell(int x, int y) {
-    System.out.print(cells[y][x].mapIcon);
+    System.out.print(cells[y][x].getMapIcon());
   }
 }
