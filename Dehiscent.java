@@ -20,24 +20,14 @@ public class Dehiscent {
       while(currentCell == previousCell) {
         System.out.println("What will you do?");
         String decision = in.nextLine().toLowerCase();
-        if (decision.startsWith("go ")) {
-          if (decision.contains("north")) {
-            if (currentCell.goNorth()) {
-              p.goNorth();
-            }
-          } else if (decision.contains("east")) {
-            if (currentCell.goEast()) {
-              p.goEast();
-            }
-          } else if (decision.contains("south")) {
-            if (currentCell.goSouth()) {
-              p.goSouth();
-            }
-          } else if (decision.contains("west")) {
-            if (currentCell.goWest()) {
-              p.goWest();
-            }
-          }
+        if (decision.equals("w")) {
+          p.goNorth();
+        } else if (decision.equals("a")) {
+          p.goWest();
+        } else if (decision.equals("s")) {
+          p.goSouth();
+        } else if (decision.equals("d")) {
+          p.goEast();
         } else if (decision.startsWith("view")) {
           if (decision.contains("map")) {
             overworld.printKnownMap(p);
