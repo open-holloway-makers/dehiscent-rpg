@@ -14,21 +14,13 @@ public class Dehiscent {
 
     for (;;) {
 
-      ArrayList<WorldPoint> testPoints = new ArrayList<WorldPoint>();
-      WorldPoint test1 = new WorldPoint(10, 10);
-      WorldPoint test2 = new WorldPoint(5, 10);
-      testPoints.add(test1);
-
-      System.out.println("Expected false: " + testPoints.contains(test2));
-      System.out.println("Expected false: " + test1.equals(test2));
-
       overworld.printKnownMap(p);
       Cell currentCell = overworld.fetchCell(p.getPosition());
       p = currentCell.event(p);
 
       Cell previousCell = currentCell;
       while(currentCell == previousCell) {
-        System.out.println("What will you do?");
+        System.out.println("\nWhat will you do?");
         String decision = in.nextLine().toLowerCase();
         switch (decision) {
           case "w":

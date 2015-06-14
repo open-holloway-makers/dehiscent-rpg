@@ -27,8 +27,12 @@ public class Player {
   }
 
   public void subHp(int x) {
-    this.hp -= x;
+    hp -= x;
   }
+
+  public void fullHeal() { setHp(getMaxHp()); }
+
+  public void setHp(int x) { hp = java.lang.Math.min(x, getMaxHp()); }
 
   public void setVit(int x) {
     vitality = x;
@@ -53,8 +57,14 @@ public class Player {
 
   // This should probably be changed in the future!
   public int getMaxHp() {
-    return 100 * (this.vitality / 10);
+    return (int)(100 * (this.vitality / 10.0));
   }
+
+  public int getHp() { return hp; }
+
+  public int getXp() { return xp; }
+
+  public int getGold() { return gold; }
 
   public int getVit() {
     return vitality;
@@ -110,7 +120,7 @@ public class Player {
   }
 
   public String vitalsToString() {
-    return "HP: " + hp + " | XP: " + xp + " | Gold: " + gold;
+    return "HP: " + hp + "/" + getMaxHp() + " | XP: " + xp + " | Gold: " + gold;
   }
 
   public String statsToString() {
