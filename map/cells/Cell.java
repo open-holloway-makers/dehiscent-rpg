@@ -6,8 +6,8 @@ public interface Cell {
 
   public default char getMapIcon() { return '?'; }
 
-  public Player explore(Player p);
-  public Player event(Player p);
+  public void explore(Player p);
+  public void event(Player p);
   
   public default boolean goNorth() { return true; }
   public default boolean goSouth() { return true; }

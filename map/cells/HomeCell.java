@@ -33,7 +33,7 @@ public class HomeCell implements Cell {
   }
 
   @Override 
-  public Player explore(Player p) {
+  public void explore(Player p) {
     if (!isExplored) {
       IO.println("There's some warm soup on a table. It has an aroma that you've never smelt before...");
       String d = IO.getDecision("Have some of the soup? ");
@@ -47,11 +47,10 @@ public class HomeCell implements Cell {
     } else {
       IO.print("There's nothing left to see here, just a cold, empty room.");
     }
-    return p;
   }
 
   @Override 
-  public Player event(Player p) {
+  public void event(Player p) {
     if (!isVisited) {
       p.setHp((int) (p.getHp() * 0.6));
       IO.println("You feel weary, waking on a straw bed.");
@@ -59,6 +58,5 @@ public class HomeCell implements Cell {
     } else {
       IO.println("What use is there returning here to be reminded of your woes..?");
     }
-    return p;
   }
 }

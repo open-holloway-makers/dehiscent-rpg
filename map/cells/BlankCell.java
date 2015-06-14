@@ -6,9 +6,9 @@ import core.Player;
 public class BlankCell implements Cell {
   
   public BlankCell() { 
-  }; 
+  };
 
-  public char getMapIcon() { return ' '; }
+  public char getMapIcon() { return '.'; }
 
   @Override
   public boolean goNorth() {
@@ -32,14 +32,12 @@ public class BlankCell implements Cell {
   }
 
   @Override
-  public Player explore(Player p) {
+  public void explore(Player p) {
     IO.println("There's nothing of interest here...");
-    return p;
   }
 
   @Override
-  public Player event(Player p) {
+  public void event(Player p) {
     IO.println("There's nothing here...");
-    return p;
   }
 }
