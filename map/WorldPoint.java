@@ -21,12 +21,22 @@ public class WorldPoint {
   }
 
   @Override
-  public boolean equals(Object object) {
-    return this.x() == ((WorldPoint)object).x() && this.y() == ((WorldPoint)object).y();
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    WorldPoint that = (WorldPoint) o;
+
+    if (x != that.x) return false;
+    if (y != that.y) return false;
+
+    return true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.x, this.y);
+    int result = x;
+    result = 31 * result + y;
+    return result;
   }
 }

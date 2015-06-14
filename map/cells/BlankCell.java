@@ -7,7 +7,7 @@ public class BlankCell implements Cell {
   public BlankCell() { 
   }; 
 
-  public char getMapIcon() { return ' '; }
+  public char getMapIcon() { return '.'; }
 
   @Override
   public boolean goNorth() {

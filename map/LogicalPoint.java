@@ -19,14 +19,24 @@ public class LogicalPoint {
   public void y(int y) { this.y = y; }
 
   @Override
-  public boolean equals(Object object) {
-    return this.q() == ((LogicalPoint)object).q() &&
-           this.x() == ((LogicalPoint)object).x() &&
-           this.y() == ((LogicalPoint)object).y();
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    LogicalPoint that = (LogicalPoint) o;
+
+    if (q != that.q) return false;
+    if (x != that.x) return false;
+    if (y != that.y) return false;
+
+    return true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.q, this.x, this.y);
+    int result = q;
+    result = 31 * result + x;
+    result = 31 * result + y;
+    return result;
   }
 }

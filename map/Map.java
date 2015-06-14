@@ -55,7 +55,7 @@ public class Map {
     LogicalPoint p = worldToLogical(player.getPosition());
     if (p.q() == q && p.x() == x && p.y() == y) {
       System.out.print('x');
-    } else if (player.getVisited().contains(new WorldPoint(x, y))) {
+    } else if (player.getVisited().contains(logicalToWorld(q, x, y))) {
       quadrants[q].printCell(x, y);
     } else {
       System.out.print(' ');
@@ -86,11 +86,11 @@ public class Map {
     }
   }
 
-  public LogicalPoint worldToLogical(WorldPoint point) {
+  public static LogicalPoint worldToLogical(WorldPoint point) {
     return worldToLogical(point.x(), point.y());
   }
   
-  public LogicalPoint worldToLogical(int x, int y) {
+  public static LogicalPoint worldToLogical(int x, int y) {
     LogicalPoint l;
     if (x >= 0 && y >= 0) { 
       l = new LogicalPoint(0, x, y);
@@ -107,11 +107,11 @@ public class Map {
     return l;
   }
 
-  public WorldPoint logicalToWorld(LogicalPoint point) {
+  public static WorldPoint logicalToWorld(LogicalPoint point) {
     return logicalToWorld(point.q(), point.x(), point.y());
   }
 
-  public WorldPoint logicalToWorld(int q, int x, int y) { 
+  public static WorldPoint logicalToWorld(int q, int x, int y) {
     WorldPoint w;
     if (q == 0) {
       w = new WorldPoint(x, y);
