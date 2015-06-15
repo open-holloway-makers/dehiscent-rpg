@@ -1,24 +1,32 @@
 package map;
 
-import map.cells.AbstractCell;
+import map.cells.Cell;
 import map.cells.BlankCell;
 
 public class Quadrant {
 
   private int size;
-  private AbstractCell[][] cells;
+  private Cell[][] cells;
 
   public Quadrant(int size) {
     this.size = size;
-    cells = new BlankCell[16][16];
+    cells = new Cell[16][16];
     for (int y = 0; y < size; y++) {
       for (int x = 0; x < size; x++) {
-        cells[x][y] = new BlankCell();
+        cells[y][x] = new BlankCell();
       }
     }
   }
 
+  public Cell getCell(int x, int y) {
+    return cells[y][x];
+  }
+
+  public void setCell(int x, int y, Cell cell) {
+    cells[y][x] = cell;
+  }
+
   public void printCell(int x, int y) {
-    System.out.print(cells[x][y].mapIcon);
+    System.out.print(cells[y][x].getMapIcon());
   }
 }

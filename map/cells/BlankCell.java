@@ -1,32 +1,43 @@
 package map.cells;
 
-public class BlankCell extends AbstractCell {
+import core.IO;
+import core.Player;
+
+public class BlankCell implements Cell {
   
-  public char mapIcon = ' ';
+  public BlankCell() { 
+  };
 
-  public BlankCell() { super(); };
+  public char getMapIcon() { return '.'; }
 
+  @Override
   public boolean goNorth() {
-    System.out.println("You continue wandering.");
+    IO.println("You continue wandering.");
     return true;
   }
 
+  @Override
   public boolean goEast() {
-    System.out.println("You continue wandering.");
-    return true;
+    return goEast();
   }
 
+  @Override
   public boolean goSouth() {
-    System.out.println("You continue wandering.");
-    return true;
+    return goEast();
   }
 
+  @Override
   public boolean goWest() {
-    System.out.println("You continue wandering.");
-    return true;
+    return goEast();
   }
 
-  public void event() {
-    System.out.println("There's nothing here...");
+  @Override
+  public void explore(Player p) {
+    IO.println("There's nothing of interest here...");
+  }
+
+  @Override
+  public void event(Player p) {
+    IO.println("There's nothing here...");
   }
 }
