@@ -1,5 +1,5 @@
 package core;
 
 public enum Stat {
-  VIT, STR, DEX, INT
+  VIT, STR, DEX, INT, PHYS_DEF
 }

@@ -13,6 +13,7 @@ public class Item {
   public Item(String name, Slot slot, Modifier modifier) {
     this.name = name;
     this.slot = slot;
+    modifiers = new ArrayList<Modifier>();
     this.modifiers.add(modifier);
   }
 

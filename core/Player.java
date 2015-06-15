@@ -6,6 +6,7 @@ import items.Modifier;
 import items.Slot;
 import map.WorldPoint;
 
+import java.awt.event.ItemEvent;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -30,18 +31,21 @@ public class Player {
     visitedPoints = new ArrayList<WorldPoint>();
     visitedPoints.add(position);
 
+    inventory = new ArrayList<Item>();
+    hiddenInventory = new ArrayList<Item>();
+
     equipSlots = new ArrayList<EquipSlot>();
-    equipSlots.add(new EquipSlot(Slot.ACCESSORY, null));
-    equipSlots.add(new EquipSlot(Slot.ACCESSORY, null));
-    equipSlots.add(new EquipSlot(Slot.ACCESSORY, null));
-    equipSlots.add(new EquipSlot(Slot.ACCESSORY, null));
+    equipSlots.add(new EquipSlot(Slot.HAND, null));
+    equipSlots.add(new EquipSlot(Slot.HAND, null));
     equipSlots.add(new EquipSlot(Slot.HEAD, null));
     equipSlots.add(new EquipSlot(Slot.CHEST, null));
     equipSlots.add(new EquipSlot(Slot.ARMS, null));
     equipSlots.add(new EquipSlot(Slot.LEGS, null));
     equipSlots.add(new EquipSlot(Slot.FEET, null));
-    equipSlots.add(new EquipSlot(Slot.HAND, null));
-    equipSlots.add(new EquipSlot(Slot.HAND, null));
+    equipSlots.add(new EquipSlot(Slot.ACCESSORY, null));
+    equipSlots.add(new EquipSlot(Slot.ACCESSORY, null));
+    equipSlots.add(new EquipSlot(Slot.ACCESSORY, null));
+    equipSlots.add(new EquipSlot(Slot.ACCESSORY, null));
   }
 
   public void addHp(int x) {
@@ -91,6 +95,8 @@ public class Player {
   public void addInt(int x) {
     tempIntelligence += x;
   }
+
+  public void addPhysDef(int x) { physicalDefence += x; }
 
   public void setPosition(int x, int y) {
     position = new WorldPoint(x, y);
@@ -146,6 +152,8 @@ public class Player {
     return intelligence + tempIntelligence;
   }
 
+  public int getPhysDef() { return physicalDefence; }
+
   public WorldPoint getPosition() {
     return position;
   }
@@ -158,9 +166,29 @@ public class Player {
     return equipSlots;
   }
 
-  public List<Item> getInventory() { return inventory; }
+  public List<Item> getInventory() {
+    return inventory;
+  }
 
-  public List<Item> getHiddenInventory() { return hiddenInventory; }
+  public List<Item> getHiddenInventory() {
+    return hiddenInventory;
+  }
+
+  public void obtain(Item i) {
+    inventory.add(i);
+  }
+
+  public void lose(Item i) {
+    inventory.remove(i);
+  }
+
+  public void obtainHidden(Item i) {
+    hiddenInventory.add(i);
+  }
+
+  public void loseHidden(Item i) {
+    hiddenInventory.remove(i);
+  }
 
   // This is all pretty terrible
   public void equip(Item i) {
@@ -227,6 +255,7 @@ public class Player {
     this.dexterity = 6;
     this.strength = 6;
     this.intelligence = 6;
+    this.physicalDefence = 0;
   }
 
   public void initVitals() {
@@ -256,7 +285,7 @@ public class Player {
   }
 
   public String statsToString() {
-    return "VIT: " + getVit() + " | DEX:" + getDex() + " | STR: " + getStr() + " | INT: " + getInt();
+    return "VIT: " + getVit() + " | DEX:" + getDex() + " | STR: " + getStr() + " | INT: " + getInt() + " | PHYS DEF: " + getPhysDef();
   }
 
   public String equippedToString() {

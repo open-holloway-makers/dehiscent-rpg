@@ -49,6 +49,9 @@ public class Dehiscent {
           if (decision.contains("equipped")) {
             System.out.println(p.equippedToString());
           }
+          if (decision.contains("inventory")) {
+            System.out.println(p.inventoryToString());
+          }
         } else if (decision.startsWith("explore") || decision.equals("e")) {
           currentCell.explore(p);
         } else {
@@ -74,7 +77,7 @@ public class Dehiscent {
   public static Map createMap() {
     Map overworld = new Map();
     overworld.setCell(0, 0, new HomeCell());
-    overworld.setCell(-1, 0, new TwoTest());
+    overworld.setCell(-1, 0, new HelmCell());
     overworld.setCell(-1, -1, new ThreeTest());
     overworld.setCell(0, -1, new FourTest());
     return overworld;
