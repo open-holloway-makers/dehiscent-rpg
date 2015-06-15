@@ -69,6 +69,14 @@ public class Player {
     hp -= x;
   }
 
+  public void addGold(int x) { gold += x; }
+
+  public void subGold(int x) { gold -= x; }
+
+  public void addXp(int x) { xp += x; }
+
+  public void subXp(int x) { xp -= x; }
+
   public void fullHeal() {
     setHp(getMaxHp());
   }
@@ -207,6 +215,13 @@ public class Player {
 
   public void loseHidden(Item i) {
     hiddenInventory.remove(i);
+  }
+
+  public void die() {
+    visitedPoints = new ArrayList<WorldPoint>();
+    setPosition(0, 0);
+    fullHeal();
+    gold /= 2;
   }
 
   public void attemptToInspect(String itemName) {

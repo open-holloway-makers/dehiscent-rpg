@@ -1,6 +1,8 @@
 package map.cells;
 
+import core.CombatResolver;
 import core.Player;
+import enemies.Enemy;
 
 public class FourTest implements Cell {
 
@@ -35,6 +37,8 @@ public class FourTest implements Cell {
 
   @Override 
   public void event(Player p) {
+    Enemy e = new Enemy("Imp", 30, 20, 20, 20);
+    CombatResolver.resolveCombat(p, e);
     System.out.println("There's nothing here...");
   }
 }
