@@ -31,9 +31,6 @@ public class Modifier {
       case PHYS_DEF:
         player.addPhysDef(mod);
         break;
-      case PHYS_DMG:
-        player.addPhysDef(mod);
-        break;
       default:
         System.out.println("Stat not found...");
     }
@@ -64,9 +61,6 @@ public class Modifier {
         player.addInt(-mod);
         break;
       case PHYS_DEF:
-        player.addPhysDef(-mod);
-        break;
-      case PHYS_DMG:
         player.addPhysDef(-mod);
         break;
       default:

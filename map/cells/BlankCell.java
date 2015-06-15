@@ -18,17 +18,17 @@ public class BlankCell implements Cell {
 
   @Override
   public boolean goEast() {
-    return goEast();
+    return goNorth();
   }
 
   @Override
   public boolean goSouth() {
-    return goEast();
+    return goNorth();
   }
 
   @Override
   public boolean goWest() {
-    return goEast();
+    return goNorth();
   }
 
   @Override

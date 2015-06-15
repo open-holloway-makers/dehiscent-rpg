@@ -8,9 +8,11 @@ public class Item {
   private SlotType slotType;
   private ArrayList<Modifier> modifiers;
   private String loreText;
+  private int value;
 
-  public Item(String name, SlotType slotType, Modifier modifier) {
+  public Item(String name, int value, SlotType slotType, Modifier modifier) {
     this.name = name;
+    this.value = value;
     this.slotType = slotType;
     modifiers = new ArrayList<Modifier>();
     this.modifiers.add(modifier);
@@ -51,7 +53,7 @@ public class Item {
     String output = "\n";
     output += ("Item: " + name + "\n");
     if (isEquippable()) {
-      output += ("Equip to: " + slotType.getValue() + "\n| ");
+      output += ("Equip to: " + slotType.getValue() + "\n");
     }
     output += modifiersToString();
     output += "\n\n" + getLoreText();

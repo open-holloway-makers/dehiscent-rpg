@@ -1,3 +1,4 @@
+import classes.Wanderer;
 import core.IO;
 import items.Item;
 import map.*;
@@ -11,7 +12,7 @@ public class Dehiscent {
 
   public static void main(String[] args) {
     Map overworld = createMap();   
-    Player p = new Player();
+    Player p = new Wanderer();
     Scanner in = new Scanner(System.in);
 
     for (;;) {
@@ -26,13 +27,25 @@ public class Dehiscent {
         String decision = in.nextLine().toLowerCase();
         switch (decision) {
           case "w":
-          case "go north": p.goNorth(); break;
+          case "go north":
+            if (currentCell.goNorth())
+              p.goNorth();
+            break;
           case "a":
-          case "go west": p.goWest(); break;
+          case "go west":
+            if (currentCell.goWest())
+              p.goWest();
+            break;
           case "s":
-          case "go south": p.goSouth(); break;
+          case "go south":
+            if (currentCell.goSouth())
+              p.goSouth();
+            break;
           case "d":
-          case "go east": p.goEast(); break;
+          case "go east":
+            if (currentCell.goEast())
+              p.goEast();
+            break;
           case "v":
             overworld.printKnownMapAlongsideStats(p);
             break;

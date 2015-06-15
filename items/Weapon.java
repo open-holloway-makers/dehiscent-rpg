@@ -16,8 +16,8 @@ public class Weapon extends Item {
   private ScalingPair dexterityScaling;
   private ScalingPair intelligenceScaling;
 
-  public Weapon(String name, SlotType slotType, Modifier modifier, double baseDamage, double baseMagicDamage, Rating strength, Rating dexterity, Rating intelligence) {
-    super(name, slotType, modifier);
+  public Weapon(String name, int value, SlotType slotType, Modifier modifier, double baseDamage, double baseMagicDamage, Rating strength, Rating dexterity, Rating intelligence) {
+    super(name, value, slotType, modifier);
     this.baseDamage = baseDamage;
     this.baseMagicDamage = baseMagicDamage;
     this.strengthScaling = new ScalingPair(Stat.STR, strength);
@@ -48,7 +48,7 @@ public class Weapon extends Item {
     String output = "\n";
     output += ("Item: " + getName() + "\n");
     if (isEquippable()) {
-      output += ("Equip to: " + getSlotType().getValue() + "\n| ");
+      output += ("Equip to: " + getSlotType().getValue() + "\n");
     }
     output += modifiersToString();
     output += "\n\n" + getLoreText();

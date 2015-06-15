@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class CombatResolver {
+
+  // Gosh what a big method
   public static void resolveCombat(Player p, Enemy e) {
     // Get possible hands
     List<String> hands = new ArrayList<String>();
@@ -47,7 +49,7 @@ public class CombatResolver {
             weaponToAttackWith = (Weapon) p.getEquipSlots().get(hands.get(d)).item;
           } else {
             IO.println("That won't make a very good weapon...");
-            weaponToAttackWith = new Weapon("Bogus weapon", SlotType.HAND, null, 10, 0, Rating.U, Rating.U, Rating.U);
+            weaponToAttackWith = new Weapon("Bogus weapon", 0, SlotType.HAND, null, 10, 0, Rating.U, Rating.U, Rating.U);
           }
         }
       }
@@ -56,7 +58,8 @@ public class CombatResolver {
       e.subHp(playerDamage);
 
       // Enemy turn
-      int enemyDamage = e.getAttackRating();
+      // At the moment physDef is pretty much straight up deducted from damage, probably no good
+      int enemyDamage = (e.getAttackRating() - (p.getPhysDef() / 8));
       IO.println("The " + e.getName() + " attacked you for " + enemyDamage + " damage!");
       p.subHp(enemyDamage);
     }

@@ -10,17 +10,17 @@ import java.util.*;
 
 public class Player {
 
-  private int hp, xp, gold;
-  private int physicalDefence, physicalDamage;
-  private int vitality, strength, dexterity, intelligence;
-  private int tempVitality, tempStrength, tempDexterity, tempIntelligence;
-  private Map<String, EquipSlot> equipSlots;
+  protected int hp, xp, gold;
+  protected int physicalDefence;
+  protected int vitality, strength, dexterity, intelligence;
+  protected int tempVitality, tempStrength, tempDexterity, tempIntelligence;
+  protected Map<String, EquipSlot> equipSlots;
 
   private WorldPoint position;
   private List<WorldPoint> visitedPoints;
 
-  private List<Item> inventory;
-  private List<Item> hiddenInventory;
+  protected List<Item> inventory;
+  protected List<Item> hiddenInventory;
 
   public Player() {
     initBaseStats();
@@ -52,7 +52,6 @@ public class Player {
     this.strength = 6;
     this.intelligence = 6;
     this.physicalDefence = 0;
-    this.physicalDamage = 0;
   }
 
   public void initVitals() {
@@ -119,8 +118,6 @@ public class Player {
 
   public void addPhysDef(int x) { physicalDefence += x; }
 
-  public void addPhysDmg(int x) { physicalDamage += x; }
-
   public void setPosition(int x, int y) {
     position = new WorldPoint(x, y);
     visitedPoints.add(position);
@@ -176,8 +173,6 @@ public class Player {
   }
 
   public int getPhysDef() { return physicalDefence; }
-
-  public int getPhysDmg() { return physicalDamage; }
 
   public WorldPoint getPosition() {
     return position;
@@ -353,7 +348,7 @@ public class Player {
 
   public String statsToString() {
     return "\nVIT: " + getVit() + " | DEX:" + getDex() + " | STR: " + getStr() + " | INT: " + getInt() +
-            "\n\nPHYS DEF: " + getPhysDef() + " | PHYS DMG: " + getPhysDmg() + "\n";
+            "\n\nPHYS DEF: " + getPhysDef() + "\n";
   }
 
   public String equippedToString() {
@@ -368,7 +363,7 @@ public class Player {
       String slotStr = String.format("%1$-20s", s + ":");
       String itemStr = (e.item == null) ? "(empty)" : e.item.getName();
       if (e.item != null) {
-        itemStr += String.format("%1$25s", e.item.modifiersToString());
+        itemStr += String.format("%1$20s", e.item.modifiersToString());
       }
       output = (slotStr + itemStr + "\n");
       if (s.contains("Hand")) {

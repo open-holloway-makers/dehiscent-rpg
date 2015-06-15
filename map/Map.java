@@ -83,6 +83,7 @@ public class Map {
       }
       System.out.println();
     }
+    System.out.println("You are at: " + player.getPosition().toString());
   }
 
   private void printKnownCell(int q, int x, int y, Player player) {

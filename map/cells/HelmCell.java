@@ -39,7 +39,7 @@ public class HelmCell implements Cell {
   public void explore(Player p) {
     if (!isExplored) {
       IO.println("You find a bronze sword, it looks old but of good craftsmanship.");
-      Item sword = new Weapon("Sword", SlotType.HAND, new Modifier(Stat.STR, +5), 20, 20, Rating.E, Rating.U, Rating.U);
+      Item sword = new Weapon("Sword", 10, SlotType.HAND, new Modifier(Stat.STR, +5), 20, 20, Rating.E, Rating.U, Rating.U);
       sword.setLoreText("Once a great winged sword, now it's cracked and a bit silly looking, but should do the job.");
       p.obtain(sword);
       isExplored = true;
