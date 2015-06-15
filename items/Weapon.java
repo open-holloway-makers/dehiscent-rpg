@@ -2,6 +2,7 @@ package items;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import core.Player;
 import core.Stat;
@@ -30,7 +31,8 @@ public class Weapon extends Item {
     attackRating *= (1 + strengthScaling.getRating().getValue() * (p.getStr() * 0.02));
     attackRating *= (1 + dexterityScaling.getRating().getValue() * (p.getDex() * 0.02));
     magicRating *= (1 + intelligenceScaling.getRating().getValue() * (p.getInt() * 0.02));
-    return (int)java.lang.Math.ceil(attackRating + magicRating);
+    Random rng = new Random();
+    return (int)java.lang.Math.ceil((attackRating + magicRating) * ((rng.nextInt(10) + 95) / 100.0));
   }
 
   public double getBaseDamage() {
