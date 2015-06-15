@@ -2,12 +2,12 @@ package items;
 
 import java.util.List;
 
-public enum Slot {
+public enum SlotType {
   HEAD("Head"), CHEST("Chest"), LEGS("Legs"), ARMS("Arms"), FEET("Feet"), HAND("Hand"), ACCESSORY("Accessory");
 
   private String value;
 
-  Slot(String value) {
+  SlotType(String value) {
     this.value = value;
   }
 
@@ -23,7 +23,7 @@ public enum Slot {
   public boolean isUnique(List<EquipSlot> slots) {
     int count = 0;
     for (EquipSlot s : slots) {
-      if (s.slot == this) count++;
+      if (s.slotType == this) count++;
       if (count > 1) return false;
     }
     return count != 0;
@@ -31,7 +31,7 @@ public enum Slot {
 
   public boolean isAvailable(List<EquipSlot> slots) {
     for (EquipSlot s : slots) {
-      if (s.slot == this && s.item == null) return true;
+      if (s.slotType == this && s.item == null) return true;
     }
     return false;
   }

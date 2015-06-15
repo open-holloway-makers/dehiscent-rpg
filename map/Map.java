@@ -51,6 +51,40 @@ public class Map {
     }
   }
 
+  // It's so inefficient, I've written it twice! :D
+  public void printKnownMapAlongsideStats(Player player) {
+    int x, y;
+    int i = 0;
+    LogicalPoint p = worldToLogical(player.getPosition());
+    String[] playerStats = (player.vitalsToString() + player.statsToString() + player.equippedToString()).split("\\n");
+    for (y = CURRENT_MAX_SIZE - 1; y >= 0; y--) {
+      for (x = CURRENT_MAX_SIZE - 1; x >= 0; x--) {
+        printKnownCell(2, x, y, player);
+      }
+      for (x = 0; x < CURRENT_MAX_SIZE; x++) {
+        printKnownCell(3, x, y, player);
+      }
+      if (i < playerStats.length) {
+        System.out.print(" " + playerStats[i]);
+        i++;
+      }
+      System.out.println();
+    }
+    for (y = 0; y < CURRENT_MAX_SIZE; y++) {
+      for (x = CURRENT_MAX_SIZE - 1; x >= 0; x--) {
+        printKnownCell(1, x, y, player);
+      }
+      for (x = 0; x < CURRENT_MAX_SIZE; x++) {
+        printKnownCell(0, x, y, player);
+      }
+      if (i < playerStats.length) {
+        System.out.print(" " + playerStats[i]);
+        i++;
+      }
+      System.out.println();
+    }
+  }
+
   private void printKnownCell(int q, int x, int y, Player player) {
     LogicalPoint p = worldToLogical(player.getPosition());
     if (p.q() == q && p.x() == x && p.y() == y) {

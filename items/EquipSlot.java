@@ -1,16 +1,11 @@
 package items;
 
-import core.Player;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class EquipSlot {
-  public Slot slot;
+  public SlotType slotType;
   public Item item;
 
-  public EquipSlot(Slot slot, Item item) {
-    this.slot = slot;
+  public EquipSlot(SlotType slotType, Item item) {
+    this.slotType = slotType;
     this.item = item;
   }
 

@@ -3,20 +3,18 @@ package core;
 import items.EquipSlot;
 import items.Item;
 import items.Modifier;
-import items.Slot;
+import items.SlotType;
 import map.WorldPoint;
 
-import java.awt.event.ItemEvent;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 public class Player {
 
   private int hp, xp, gold;
-  private int physicalDefence;
+  private int physicalDefence, physicalDamage;
   private int vitality, strength, dexterity, intelligence;
   private int tempVitality, tempStrength, tempDexterity, tempIntelligence;
-  private List<EquipSlot> equipSlots;
+  private Map<String, EquipSlot> equipSlots;
 
   private WorldPoint position;
   private List<WorldPoint> visitedPoints;
@@ -34,18 +32,33 @@ public class Player {
     inventory = new ArrayList<Item>();
     hiddenInventory = new ArrayList<Item>();
 
-    equipSlots = new ArrayList<EquipSlot>();
-    equipSlots.add(new EquipSlot(Slot.HAND, null));
-    equipSlots.add(new EquipSlot(Slot.HAND, null));
-    equipSlots.add(new EquipSlot(Slot.HEAD, null));
-    equipSlots.add(new EquipSlot(Slot.CHEST, null));
-    equipSlots.add(new EquipSlot(Slot.ARMS, null));
-    equipSlots.add(new EquipSlot(Slot.LEGS, null));
-    equipSlots.add(new EquipSlot(Slot.FEET, null));
-    equipSlots.add(new EquipSlot(Slot.ACCESSORY, null));
-    equipSlots.add(new EquipSlot(Slot.ACCESSORY, null));
-    equipSlots.add(new EquipSlot(Slot.ACCESSORY, null));
-    equipSlots.add(new EquipSlot(Slot.ACCESSORY, null));
+    equipSlots = new HashMap<String, EquipSlot>();
+    equipSlots.put("Left Hand", new EquipSlot(SlotType.HAND, null));
+    equipSlots.put("Right Hand", new EquipSlot(SlotType.HAND, null));
+    equipSlots.put("Head", new EquipSlot(SlotType.HEAD, null));
+    equipSlots.put("Chest", new EquipSlot(SlotType.CHEST, null));
+    equipSlots.put("Arms", new EquipSlot(SlotType.ARMS, null));
+    equipSlots.put("Legs", new EquipSlot(SlotType.LEGS, null));
+    equipSlots.put("Feet", new EquipSlot(SlotType.FEET, null));
+    equipSlots.put("Accessory (1)", new EquipSlot(SlotType.ACCESSORY, null));
+    equipSlots.put("Accessory (2)", new EquipSlot(SlotType.ACCESSORY, null));
+    equipSlots.put("Accessory (3)", new EquipSlot(SlotType.ACCESSORY, null));
+    equipSlots.put("Accessory (4)", new EquipSlot(SlotType.ACCESSORY, null));
+  }
+
+  public void initBaseStats() {
+    this.vitality = 6;
+    this.dexterity = 6;
+    this.strength = 6;
+    this.intelligence = 6;
+    this.physicalDefence = 0;
+    this.physicalDamage = 0;
+  }
+
+  public void initVitals() {
+    this.hp = this.getMaxHp();
+    this.xp = 0;
+    this.gold = 0;
   }
 
   public void addHp(int x) {
@@ -97,6 +110,8 @@ public class Player {
   }
 
   public void addPhysDef(int x) { physicalDefence += x; }
+
+  public void addPhysDmg(int x) { physicalDamage += x; }
 
   public void setPosition(int x, int y) {
     position = new WorldPoint(x, y);
@@ -154,6 +169,8 @@ public class Player {
 
   public int getPhysDef() { return physicalDefence; }
 
+  public int getPhysDmg() { return physicalDamage; }
+
   public WorldPoint getPosition() {
     return position;
   }
@@ -162,7 +179,7 @@ public class Player {
     return visitedPoints;
   }
 
-  public List<EquipSlot> getEquipSlots() {
+  public Map<String, EquipSlot> getEquipSlots() {
     return equipSlots;
   }
 
@@ -175,10 +192,12 @@ public class Player {
   }
 
   public void obtain(Item i) {
+    IO.println(i.getName() + " added to inventory.");
     inventory.add(i);
   }
 
   public void lose(Item i) {
+    IO.println(i.getName() + " removed from inventory.");
     inventory.remove(i);
   }
 
@@ -190,78 +209,107 @@ public class Player {
     hiddenInventory.remove(i);
   }
 
-  // This is all pretty terrible
-  public void equip(Item i) {
-    if (i.isEquippable()) {
-      Slot s = i.getSlot();
-      if (i.getSlot().isUnique(equipSlots)) {
-        for (EquipSlot e : equipSlots) {
-          if (e.slot == s) {
-            equip(e, i);
-          }
+  public void attemptToInspect(String itemName) {
+    Item itemToInspect = null;
+    for (Item i : inventory) {
+      if (i.getName().equalsIgnoreCase(itemName)) {
+        itemToInspect = i;
+        break;
+      }
+    }
+    if (itemToInspect == null) {
+      for (String key : equipSlots.keySet()) {
+        EquipSlot e = equipSlots.get(key);
+        if (e.item != null && e.item.getName().equalsIgnoreCase(itemName)) {
+          itemToInspect = e.item;
+          break;
         }
+      }
+    }
+    if (itemToInspect != null) {
+      IO.println(itemToInspect.toString());
+    }
+  }
+
+  public boolean attemptToEquip(String s) {
+    Item itemToEquip = null;
+    for (Item i : inventory) {
+      if (i.getName().equalsIgnoreCase(s)) {
+        itemToEquip = i;
+        break;
+      }
+    }
+    if (!itemToEquip.isEquippable()) {
+      IO.println("Item is not equippable");
+      return false;
+    }
+    if (itemToEquip == null) {
+      IO.println("No item found");
+      return false;
+    }
+    List<String> possibleEquipSlots = new ArrayList<>();
+    for (String key : equipSlots.keySet()) {
+      EquipSlot e = equipSlots.get(key);
+      if (e.slotType == itemToEquip.getSlotType()) {
+        possibleEquipSlots.add(key);
+      }
+    }
+    Collections.sort(possibleEquipSlots);
+    EquipSlot slotToEquipTo = null;
+    if (possibleEquipSlots.size() == 1) {
+      slotToEquipTo = equipSlots.get(possibleEquipSlots.get(0));
+    } else if (possibleEquipSlots.size() > 1) {
+      for (int i = 0; i < possibleEquipSlots.size(); i++) {
+        IO.println(i + ": " + possibleEquipSlots.get(i));
+      }
+      String decision = IO.getDecision("Which slot would you like to equip to? ");
+      int d = -1;
+      try {
+        d = Integer.parseInt(decision);
+      } catch (NumberFormatException e) {}
+      if (d == -1 || d >= possibleEquipSlots.size()) {
+        IO.println("Please enter a number between 0 and " + (possibleEquipSlots.size() - 1));
       } else {
-        int count = 0;
-        IO.println("Which slot would you like to equip to?");
-        for (EquipSlot e : equipSlots) {
-          if (e.slot == s) {
-            count++;
-            IO.print(count + ": " + e.item.getName());
-          }
-        }
-        String decision = IO.getDecision("\n");
-        int d = 0;
-        try {
-          d = Integer.parseInt(decision);
-        } catch (NumberFormatException e) {
-        }
-        for (EquipSlot e : equipSlots) {
-          if (e.slot == s) {
-            count++;
-            if (count == d) {
-              equip(e, i);
-            }
-          }
-        }
+        slotToEquipTo = equipSlots.get(possibleEquipSlots.get(d));
       }
-      inventory.remove(i);
+    }
+    return equip(slotToEquipTo, itemToEquip);
+  }
+
+  public boolean attemptToUnequip(String itemName) {
+    EquipSlot slotToUnequipFrom = null;
+    for (String key : equipSlots.keySet()) {
+      EquipSlot e = equipSlots.get(key);
+      if (e.item != null && e.item.getName().equalsIgnoreCase(itemName)) {
+        slotToUnequipFrom = e;
+        break;
+      }
+    }
+    return unequip(slotToUnequipFrom);
+  }
+
+  public boolean equip(EquipSlot slotToEquipTo, Item itemToEquip) {
+    if (slotToEquipTo != null) {
+      unequip(slotToEquipTo);
+      Modifier.apply(itemToEquip.getModifiers(), this);
+      slotToEquipTo.item = itemToEquip;
+      inventory.remove(itemToEquip);
+      IO.println(itemToEquip.getName() + " equipped.");
+      return true;
+    }
+    return false;
+  }
+
+  public boolean unequip(EquipSlot slotToUnequipFrom) {
+    if (slotToUnequipFrom.item != null) {
+      Modifier.remove(slotToUnequipFrom.item.getModifiers(), this);
+      inventory.add(slotToUnequipFrom.item);
+      IO.println(slotToUnequipFrom.item.getName() + " unequipped.");
+      slotToUnequipFrom.item = null;
+      return true;
     } else {
-      IO.println("Cannot equip " + i.getName());
+      return false;
     }
-  }
-
-  public void equip(EquipSlot e, Item i) {
-    unequip(e);
-    e.item = i;
-    Modifier.apply(i.getModifiers(), this);
-  }
-
-  public void unequip(EquipSlot e) {
-    if (!e.isFree()) unequip(e.item.getName());
-  }
-
-  public void unequip(String s) {
-    for (EquipSlot e : equipSlots) {
-      if (!e.isFree() && e.item.getName().equalsIgnoreCase(s)) {
-        Modifier.remove(e.item.getModifiers(), this);
-        inventory.add(e.item);
-        e.item = null;
-      }
-    }
-  }
-
-  public void initBaseStats() {
-    this.vitality = 6;
-    this.dexterity = 6;
-    this.strength = 6;
-    this.intelligence = 6;
-    this.physicalDefence = 0;
-  }
-
-  public void initVitals() {
-    this.hp = this.getMaxHp();
-    this.xp = 0;
-    this.gold = 0;
   }
 
   public void goNorth() {
@@ -281,21 +329,42 @@ public class Player {
   }
 
   public String vitalsToString() {
-    return "HP: " + hp + "/" + getMaxHp() + " | XP: " + xp + " | Gold: " + gold;
+    return "\nHP: " + hp + "/" + getMaxHp() + " | XP: " + xp + " | Gold: " + gold + "\n";
+  }
+
+  public String baseStatsToString() {
+    return "\nVIT: " + getBaseVit() + " | DEX:" + getBaseDex() + " | STR: " + getBaseStr() + " | INT: " + getBaseInt() + "\n";
   }
 
   public String statsToString() {
-    return "VIT: " + getVit() + " | DEX:" + getDex() + " | STR: " + getStr() + " | INT: " + getInt() + " | PHYS DEF: " + getPhysDef();
+    return "\nVIT: " + getVit() + " | DEX:" + getDex() + " | STR: " + getStr() + " | INT: " + getInt() +
+            "\n\nPHYS DEF: " + getPhysDef() + " | PHYS DMG: " + getPhysDmg() + "\n";
   }
 
   public String equippedToString() {
-    String output = "";
-    for (EquipSlot e : equipSlots) {
-      String slotStr = e.slot.toString();
-      String itemStr = (e.item == null) ? "(empty)" : e.item.toString();
-      output += (slotStr + ": " + itemStr + "\n");
+    List<String> sortedKeys = new ArrayList<String>(equipSlots.keySet());
+    Collections.sort(sortedKeys);
+    String output;
+    String outputHands = "";
+    String outputBody = "";
+    String outputAccessories = "";
+    for (String s : sortedKeys) {
+      EquipSlot e = equipSlots.get(s);
+      String slotStr = String.format("%1$-20s", s + ":");
+      String itemStr = (e.item == null) ? "(empty)" : e.item.getName();
+      if (e.item != null) {
+        itemStr += String.format("%1$25s", e.item.modifiersToString());
+      }
+      output = (slotStr + itemStr + "\n");
+      if (s.contains("Hand")) {
+        outputHands += output;
+      } else if (s.contains("Accessory")) {
+        outputAccessories += output;
+      } else {
+        outputBody += output;
+      }
     }
-    return output;
+    return "\n" + outputHands + "\n" + outputBody + "\n" + outputAccessories;
   }
 
   public String inventoryToString() {

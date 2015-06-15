@@ -5,7 +5,7 @@ import core.Player;
 import core.Stat;
 import items.Item;
 import items.Modifier;
-import items.Slot;
+import items.SlotType;
 
 public class HelmCell implements Cell {
 
@@ -40,9 +40,10 @@ public class HelmCell implements Cell {
   @Override
   public void explore(Player p) {
     if (!isExplored) {
-      IO.println("You find a bronze helm, it looks old but of good craftsmanship.");
-      Item helmet = new Item("Helmet", Slot.HEAD, new Modifier(Stat.PHYS_DEF, +5));
-      p.obtain(helmet);
+      IO.println("You find a bronze sword, it looks old but of good craftsmanship.");
+      Item sword = new Item("Sword", SlotType.HAND, new Modifier(Stat.STR, +5));
+      sword.setLoreText("Once a great winged sword, now it's cracked and a bit silly looking, but should do the job.");
+      p.obtain(sword);
       isExplored = true;
     } else {
       IO.print("There's nothing left to see here.");
