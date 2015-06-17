@@ -219,14 +219,8 @@ public class Player {
     gold /= 2;
   }
 
-  public void attemptToInspect(String itemName) {
-    Item itemToInspect = null;
-    for (Item i : inventory) {
-      if (i.getName().equalsIgnoreCase(itemName)) {
-        itemToInspect = i;
-        break;
-      }
-    }
+  public boolean attemptToInspect(String itemName) {
+    Item itemToInspect = findItem(itemName);
     if (itemToInspect == null) {
       for (String key : equipSlots.keySet()) {
         EquipSlot e = equipSlots.get(key);
@@ -238,7 +232,18 @@ public class Player {
     }
     if (itemToInspect != null) {
       IO.println(itemToInspect.toString());
+      return true;
     }
+    return false;
+  }
+
+  public Item findItem(String itemName) {
+    for (Item i : inventory) {
+      if (i.getName().equalsIgnoreCase(itemName)) {
+        return i;
+      }
+    }
+    return null;
   }
 
   public boolean attemptToEquip(String s) {
