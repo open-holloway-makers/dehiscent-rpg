@@ -1,13 +1,11 @@
 import classes.Wanderer;
 import core.IO;
-import items.Item;
-import map.*;
-import map.cells.*;
 import core.Player;
+import map.Map;
+import map.cells.*;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Dehiscent {
@@ -113,6 +111,7 @@ public class Dehiscent {
     overworld.setCell(-1, 0, new HelmCell());
     overworld.setCell(-1, -1, new ThreeTest());
     overworld.setCell(0, -1, new FourTest());
+    overworld.setCell(1, 1, new Beggar());
     return overworld;
   }
 }
