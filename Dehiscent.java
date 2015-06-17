@@ -5,14 +5,23 @@ import map.*;
 import map.cells.*;
 import core.Player;
 
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Dehiscent {
 
   public static void main(String[] args) {
+    // Suppress console output during setup
+    OutputStream realSystemOut = System.out;
+    System.setOut(IO.getNullPrintStream());
     Map overworld = createMap();   
     Player p = new Wanderer();
+
+    // Resume console output
+    System.setOut(new PrintStream(realSystemOut));
+
     Scanner in = new Scanner(System.in);
 
     for (;;) {

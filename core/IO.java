@@ -1,5 +1,8 @@
 package core;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.Scanner;
 
 public class IO {
@@ -22,4 +25,14 @@ public class IO {
   public static void println(String s) {
     System.out.println(s);
   }
+
+  public static PrintStream getNullPrintStream() {
+    return new PrintStream(new OutputStream() {
+      @Override
+      public void write(int b) throws IOException {
+      }
+    });
+  }
 }
+
+

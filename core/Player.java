@@ -204,12 +204,20 @@ public class Player {
   }
 
   public void obtain(Item i) {
-    IO.println(i.getName() + " added to inventory.");
+    obtain(i, false);
+  }
+
+  public void obtain(Item i, boolean suppress) {
+    if (!suppress) IO.println(i.getName() + " added to inventory.");
     inventory.add(i);
   }
 
   public void lose(Item i) {
-    IO.println(i.getName() + " removed from inventory.");
+    lose(i, false);
+  }
+
+  public void lose(Item i, boolean suppress) {
+    if (!suppress) IO.println(i.getName() + " removed from inventory.");
     inventory.remove(i);
   }
 
@@ -354,16 +362,15 @@ public class Player {
   }
 
   public String vitalsToString() {
-    return "\nHP: " + hp + "/" + getMaxHp() + " | XP: " + xp + " | Gold: " + gold + "\n";
+    return String.format("\nHP: %d/%d | XP: %d | Gold: %d\n", hp, getMaxHp(), xp, gold);
   }
 
   public String baseStatsToString() {
-    return "\nVIT: " + getBaseVit() + " | DEX:" + getBaseDex() + " | STR: " + getBaseStr() + " | INT: " + getBaseInt() + "\n";
+    return String.format("\nVIT: %d | DEX: %d | STR: %d | INT: %d\n", getBaseVit(), getBaseDex(), getBaseStr(), getBaseInt());
   }
 
   public String statsToString() {
-    return "\nVIT: " + getVit() + " | DEX:" + getDex() + " | STR: " + getStr() + " | INT: " + getInt() +
-            "\n\nPHYS DEF: " + getPhysDef() + "\n";
+    return String.format("\nVIT: %d | DEX: %d | STR: %d | INT: %d\n\nPHYS DEF: %d\n", getVit(), getDex(), getStr(), getInt(), getPhysDef());
   }
 
   public String equippedToString() {
