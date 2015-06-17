@@ -1,9 +1,6 @@
 package core;
 
-import items.EquipSlot;
-import items.Item;
-import items.Modifier;
-import items.SlotType;
+import items.*;
 import map.WorldPoint;
 
 import java.util.*;
@@ -68,13 +65,21 @@ public class Player {
     hp -= x;
   }
 
-  public void addGold(int x) { gold += x; }
+  public void addGold(int x) {
+    gold += x;
+  }
 
-  public void subGold(int x) { gold -= x; }
+  public void subGold(int x) {
+    gold -= x;
+  }
 
-  public void addXp(int x) { xp += x; }
+  public void addXp(int x) {
+    xp += x;
+  }
 
-  public void subXp(int x) { xp -= x; }
+  public void subXp(int x) {
+    xp -= x;
+  }
 
   public void fullHeal() {
     setHp(getMaxHp());
@@ -116,7 +121,9 @@ public class Player {
     tempIntelligence += x;
   }
 
-  public void addPhysDef(int x) { physicalDefence += x; }
+  public void addPhysDef(int x) {
+    physicalDefence += x;
+  }
 
   public void setPosition(int x, int y) {
     position = new WorldPoint(x, y);
@@ -172,7 +179,9 @@ public class Player {
     return intelligence + tempIntelligence;
   }
 
-  public int getPhysDef() { return physicalDefence; }
+  public int getPhysDef() {
+    return physicalDefence;
+  }
 
   public WorldPoint getPosition() {
     return position;
@@ -281,7 +290,8 @@ public class Player {
       int d = -1;
       try {
         d = Integer.parseInt(decision);
-      } catch (NumberFormatException e) {}
+      } catch (NumberFormatException e) {
+      }
       if (d == -1 || d >= possibleEquipSlots.size()) {
         IO.println("Please enter a number between 0 and " + (possibleEquipSlots.size() - 1));
       } else {
@@ -359,18 +369,31 @@ public class Player {
   public String equippedToString() {
     List<String> sortedKeys = new ArrayList<String>(equipSlots.keySet());
     Collections.sort(sortedKeys);
+    String formatString = "%-16s%-24s%-8s%8s\n";
     String output;
+
+    String title = "------------------------------------------------------------\n";
+    title += String.format(formatString, "Equip Slot", "Item Name", "Dmg", "Modifiers");
+    title += "------------------------------------------------------------";
     String outputHands = "";
     String outputBody = "";
     String outputAccessories = "";
     for (String s : sortedKeys) {
       EquipSlot e = equipSlots.get(s);
-      String slotStr = String.format("%1$-20s", s + ":");
+      String slotStr = s;
       String itemStr = (e.item == null) ? "(empty)" : e.item.getName();
+      String dmgStr = "";
+      String modStr = "";
       if (e.item != null) {
-        itemStr += String.format("%1$20s", e.item.modifiersToString());
+        if (e.item instanceof Weapon) {
+          dmgStr = Integer.toString(((Weapon) e.item).getAttackRating(this));
+        }
+          modStr = e.item.modifiersToString();
+
       }
-      output = (slotStr + itemStr + "\n");
+
+      output = String.format(formatString, s, itemStr, dmgStr, modStr);
+
       if (s.contains("Hand")) {
         outputHands += output;
       } else if (s.contains("Accessory")) {
@@ -379,7 +402,7 @@ public class Player {
         outputBody += output;
       }
     }
-    return "\n" + outputHands + "\n" + outputBody + "\n" + outputAccessories;
+    return "\n" + title + "\n" + outputHands + "\n" + outputBody + "\n" + outputAccessories;
   }
 
   public String inventoryToString() {

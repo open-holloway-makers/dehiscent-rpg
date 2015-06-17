@@ -41,7 +41,7 @@ public class Merchant {
   }
 
   public void obtain(Item item) {
-    inventory.add(new SaleItem(item, getAdjustedSellingPrice(item));
+    inventory.add(new SaleItem(item, getAdjustedSellingPrice(item)));
   }
 
   public void lose(SaleItem i) {

@@ -14,7 +14,9 @@ public class TransactionResolver {
         IO.println(m.inventoryToString());
       } else if (decision.startsWith("inspect") || decision.startsWith("i ")) {
         String itemName = decision.substring(decision.indexOf(" ")).trim();
-        p.attemptToInspect(itemName);
+        if (!m.attemptToInspect(itemName)) {
+          p.attemptToInspect(itemName);
+        }
       } else if (decision.startsWith("buy") || decision.startsWith("b ")) {
         String itemName = decision.substring(decision.indexOf(" ")).trim();
         buy(p, m, itemName);
@@ -27,8 +29,17 @@ public class TransactionResolver {
 
   public static void buy(Player p, Merchant m, String itemName) {
     SaleItem itemToBuy = m.findSaleItem(itemName);
-    // Add check to buy
-    String d = IO.getDecision("Want to buy a " + itemName + " for " + itemToBuy.getSalePrice() + "? ");
+    buy(p, m, itemName, "Want to buy a " + itemName + " for " + itemToBuy.getSalePrice() + "? ");
+  }
+
+  public static void sell(Player p, Merchant m, String itemName) {
+    SaleItem itemToBuy = m.findSaleItem(itemName);
+    sell(p, m, itemName, "Want to buy a " + itemName + " for " + itemToBuy.getSalePrice() + "? ");
+  }
+
+  public static void buy(Player p, Merchant m, String itemName, String confirmationMessage) {
+    SaleItem itemToBuy = m.findSaleItem(itemName);
+    String d = IO.getDecision(confirmationMessage);
     if (d.startsWith("y")) {
       if (itemToBuy != null && p.getGold() >= itemToBuy.getSalePrice()) {
         p.obtain(itemToBuy.getItemForSale());
@@ -39,11 +50,10 @@ public class TransactionResolver {
     }
   }
 
-  public static void sell(Player p, Merchant m, String itemName) {
+  public static void sell(Player p, Merchant m, String itemName, String confirmationMessage) {
     Item itemToSell = p.findItem(itemName);
     int adjustedPrice = m.getAdjustedBuyingPrice(itemToSell);
-
-    String d = IO.getDecision("Want to buy a " + itemName + " for " + adjustedPrice + "? ");
+    String d = IO.getDecision(confirmationMessage);
     if (d.startsWith("y")) {
       if (itemToSell != null && m.getGold() >= itemToSell.getValue()) {
         p.lose(itemToSell);
@@ -53,6 +63,5 @@ public class TransactionResolver {
       }
     }
   }
-
 
 }

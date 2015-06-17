@@ -66,7 +66,7 @@ public class Dehiscent {
           if (decision.contains("vitals")) {
             System.out.println(p.vitalsToString());
           }
-          if (decision.contains("equipped")) {
+          if (decision.contains("equip")) {
             System.out.println(p.equippedToString());
           }
           if (decision.contains("inventory")) {
