@@ -2,6 +2,7 @@ package map.cells;
 
 import core.IO;
 import core.Player;
+import items.Consumable;
 
 public class Beggar implements Cell {
 
@@ -17,7 +18,13 @@ public class Beggar implements Cell {
 
   @Override
   public void event(Player p) {
-
+    IO.println("You found more soup!");
+    Consumable soup = new Consumable("soup", 5) {
+      public void use(Player p) {
+        p.addXp(50);
+      }
+    };
+    p.obtain(soup);
   }
 
   @Override

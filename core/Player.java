@@ -264,13 +264,7 @@ public class Player {
   }
 
   public boolean attemptToEquip(String s) {
-    Item itemToEquip = null;
-    for (Item i : inventory) {
-      if (i.getName().equalsIgnoreCase(s)) {
-        itemToEquip = i;
-        break;
-      }
-    }
+    Item itemToEquip = findItem(s);
     if (!itemToEquip.isEquippable()) {
       IO.println("Item is not equippable");
       return false;
@@ -307,6 +301,21 @@ public class Player {
       }
     }
     return equip(slotToEquipTo, itemToEquip);
+  }
+
+  public boolean attemptToUse(String itemName) {
+    Item itemToUse = findItem(itemName);
+    if (!(itemToUse instanceof Consumable)) {
+      IO.println("Item is not consumable");
+      return false;
+    } else if (itemToUse == null) {
+      IO.println("No item found");
+      return false;
+    } else {
+      ((Consumable) itemToUse).use(this);
+      lose(itemToUse);
+      return true;
+    }
   }
 
   public boolean attemptToUnequip(String itemName) {

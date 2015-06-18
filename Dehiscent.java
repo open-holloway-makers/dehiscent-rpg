@@ -81,7 +81,10 @@ public class Dehiscent {
             System.out.println(p.inventoryToString());
             System.out.println("===============");
           }
-        } else if (decision.startsWith("inspect") || decision.startsWith("i ")) {
+        } else if (decision.startsWith("use") || decision.startsWith("u ")) {
+          String itemName = decision.substring(decision.indexOf(" ")).trim();
+          p.attemptToUse(itemName);
+        }else if (decision.startsWith("inspect") || decision.startsWith("i ")) {
           String itemName = decision.substring(decision.indexOf(" ")).trim();
           p.attemptToInspect(itemName);
         } else if (decision.startsWith("explore") || decision.equals("e")) {

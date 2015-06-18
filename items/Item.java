@@ -10,6 +10,13 @@ public class Item {
   private String loreText;
   private int value;
 
+  public Item(String name, int value) {
+    this.name = name;
+    this.value = value;
+    this.modifiers = new ArrayList<Modifier>();
+    this.slotType = null;
+  }
+
   public Item(String name, int value, SlotType slotType, Modifier modifier) {
     this.name = name;
     this.value = value;
