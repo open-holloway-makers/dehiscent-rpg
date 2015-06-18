@@ -305,15 +305,14 @@ public class Player {
 
   public boolean attemptToUse(String itemName) {
     Item itemToUse = findItem(itemName);
-    if (!(itemToUse instanceof Consumable)) {
-      IO.println("Item is not consumable");
-      return false;
-    } else if (itemToUse == null) {
+    if (itemToUse == null) {
       IO.println("No item found");
+      return false;
+    } else if (!(itemToUse instanceof Consumable)) {
+      IO.println("You can't use this item that way!");
       return false;
     } else {
       ((Consumable) itemToUse).use(this);
-      lose(itemToUse);
       return true;
     }
   }

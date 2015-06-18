@@ -1,23 +1,35 @@
 package items;
 
+import core.IO;
 import core.Player;
 
 public class Consumable extends Item {
 
-  public Consumable(String name, int value) {
+  private Useable u;
+  private int uses;
+  private String messageOnUse;
+
+  public Consumable(String name, int value, int uses, Useable u) {
     super(name, value);
+    this.u = u;
+    this.uses = uses;
+    this.messageOnUse = "";
   }
 
-  public void takeEffect(ConsumableEffect effect, Player p) {
-    effect.begin(p);
+  public Consumable(String name, int value, int uses, String messageOnUse, Useable u) {
+    super(name, value);
+    this.u = u;
+    this.uses = uses;
+    this.messageOnUse = messageOnUse;
   }
 
   public void use(Player player) {
-    player.addGold(50);
+    IO.print(messageOnUse);
+    u.use(player);
+    if (--uses <= 0) {
+      player.lose(this);
+    }
   }
 
-  public interface ConsumableEffect {
-    void begin(Player player);
-  }
 
 }
