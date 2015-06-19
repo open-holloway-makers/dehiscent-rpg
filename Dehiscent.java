@@ -1,17 +1,25 @@
+import classes.Wanderer;
 import core.IO;
-import items.Item;
-import map.*;
-import map.cells.*;
 import core.Player;
+import map.Map;
+import map.cells.*;
 
-import java.util.ArrayList;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.Scanner;
 
 public class Dehiscent {
 
   public static void main(String[] args) {
+    // Suppress console output during setup
+    OutputStream realSystemOut = System.out;
+    System.setOut(IO.getNullPrintStream());
     Map overworld = createMap();   
-    Player p = new Player();
+    Player p = new Wanderer();
+
+    // Resume console output
+    System.setOut(new PrintStream(realSystemOut));
+
     Scanner in = new Scanner(System.in);
 
     for (;;) {
@@ -26,13 +34,25 @@ public class Dehiscent {
         String decision = in.nextLine().toLowerCase();
         switch (decision) {
           case "w":
-          case "go north": p.goNorth(); break;
+          case "go north":
+            if (currentCell.goNorth())
+              p.goNorth();
+            break;
           case "a":
-          case "go west": p.goWest(); break;
+          case "go west":
+            if (currentCell.goWest())
+              p.goWest();
+            break;
           case "s":
-          case "go south": p.goSouth(); break;
+          case "go south":
+            if (currentCell.goSouth())
+              p.goSouth();
+            break;
           case "d":
-          case "go east": p.goEast(); break;
+          case "go east":
+            if (currentCell.goEast())
+              p.goEast();
+            break;
           case "v":
             overworld.printKnownMapAlongsideStats(p);
             break;
@@ -53,7 +73,7 @@ public class Dehiscent {
           if (decision.contains("vitals")) {
             System.out.println(p.vitalsToString());
           }
-          if (decision.contains("equipped")) {
+          if (decision.contains("equip")) {
             System.out.println(p.equippedToString());
           }
           if (decision.contains("inventory")) {
@@ -61,7 +81,10 @@ public class Dehiscent {
             System.out.println(p.inventoryToString());
             System.out.println("===============");
           }
-        } else if (decision.startsWith("inspect") || decision.startsWith("i ")) {
+        } else if (decision.startsWith("use") || decision.startsWith("u ")) {
+          String itemName = decision.substring(decision.indexOf(" ")).trim();
+          p.attemptToUse(itemName);
+        }else if (decision.startsWith("inspect") || decision.startsWith("i ")) {
           String itemName = decision.substring(decision.indexOf(" ")).trim();
           p.attemptToInspect(itemName);
         } else if (decision.startsWith("explore") || decision.equals("e")) {
@@ -91,6 +114,7 @@ public class Dehiscent {
     overworld.setCell(-1, 0, new HelmCell());
     overworld.setCell(-1, -1, new ThreeTest());
     overworld.setCell(0, -1, new FourTest());
+    overworld.setCell(1, 1, new Beggar());
     return overworld;
   }
 }

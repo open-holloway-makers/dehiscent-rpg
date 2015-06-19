@@ -1,26 +1,23 @@
 package core;
 
-import items.EquipSlot;
-import items.Item;
-import items.Modifier;
-import items.SlotType;
+import items.*;
 import map.WorldPoint;
 
 import java.util.*;
 
 public class Player {
 
-  private int hp, xp, gold;
-  private int physicalDefence, physicalDamage;
-  private int vitality, strength, dexterity, intelligence;
-  private int tempVitality, tempStrength, tempDexterity, tempIntelligence;
-  private Map<String, EquipSlot> equipSlots;
+  protected int hp, xp, gold;
+  protected int physicalDefence;
+  protected int vitality, strength, dexterity, intelligence;
+  protected int tempVitality, tempStrength, tempDexterity, tempIntelligence;
+  protected Map<String, EquipSlot> equipSlots;
 
   private WorldPoint position;
   private List<WorldPoint> visitedPoints;
 
-  private List<Item> inventory;
-  private List<Item> hiddenInventory;
+  protected List<Item> inventory;
+  protected List<Item> hiddenInventory;
 
   public Player() {
     initBaseStats();
@@ -52,7 +49,6 @@ public class Player {
     this.strength = 6;
     this.intelligence = 6;
     this.physicalDefence = 0;
-    this.physicalDamage = 0;
   }
 
   public void initVitals() {
@@ -69,13 +65,21 @@ public class Player {
     hp -= x;
   }
 
-  public void addGold(int x) { gold += x; }
+  public void addGold(int x) {
+    gold += x;
+  }
 
-  public void subGold(int x) { gold -= x; }
+  public void subGold(int x) {
+    gold -= x;
+  }
 
-  public void addXp(int x) { xp += x; }
+  public void addXp(int x) {
+    xp += x;
+  }
 
-  public void subXp(int x) { xp -= x; }
+  public void subXp(int x) {
+    xp -= x;
+  }
 
   public void fullHeal() {
     setHp(getMaxHp());
@@ -117,9 +121,9 @@ public class Player {
     tempIntelligence += x;
   }
 
-  public void addPhysDef(int x) { physicalDefence += x; }
-
-  public void addPhysDmg(int x) { physicalDamage += x; }
+  public void addPhysDef(int x) {
+    physicalDefence += x;
+  }
 
   public void setPosition(int x, int y) {
     position = new WorldPoint(x, y);
@@ -175,9 +179,9 @@ public class Player {
     return intelligence + tempIntelligence;
   }
 
-  public int getPhysDef() { return physicalDefence; }
-
-  public int getPhysDmg() { return physicalDamage; }
+  public int getPhysDef() {
+    return physicalDefence;
+  }
 
   public WorldPoint getPosition() {
     return position;
@@ -200,12 +204,20 @@ public class Player {
   }
 
   public void obtain(Item i) {
-    IO.println(i.getName() + " added to inventory.");
+    obtain(i, false);
+  }
+
+  public void obtain(Item i, boolean suppress) {
+    if (!suppress) IO.println(i.getName() + " added to inventory.");
     inventory.add(i);
   }
 
   public void lose(Item i) {
-    IO.println(i.getName() + " removed from inventory.");
+    lose(i, false);
+  }
+
+  public void lose(Item i, boolean suppress) {
+    if (!suppress) IO.println(i.getName() + " removed from inventory.");
     inventory.remove(i);
   }
 
@@ -224,14 +236,8 @@ public class Player {
     gold /= 2;
   }
 
-  public void attemptToInspect(String itemName) {
-    Item itemToInspect = null;
-    for (Item i : inventory) {
-      if (i.getName().equalsIgnoreCase(itemName)) {
-        itemToInspect = i;
-        break;
-      }
-    }
+  public boolean attemptToInspect(String itemName) {
+    Item itemToInspect = findItem(itemName);
     if (itemToInspect == null) {
       for (String key : equipSlots.keySet()) {
         EquipSlot e = equipSlots.get(key);
@@ -243,17 +249,22 @@ public class Player {
     }
     if (itemToInspect != null) {
       IO.println(itemToInspect.toString());
+      return true;
     }
+    return false;
+  }
+
+  public Item findItem(String itemName) {
+    for (Item i : inventory) {
+      if (i.getName().equalsIgnoreCase(itemName)) {
+        return i;
+      }
+    }
+    return null;
   }
 
   public boolean attemptToEquip(String s) {
-    Item itemToEquip = null;
-    for (Item i : inventory) {
-      if (i.getName().equalsIgnoreCase(s)) {
-        itemToEquip = i;
-        break;
-      }
-    }
+    Item itemToEquip = findItem(s);
     if (!itemToEquip.isEquippable()) {
       IO.println("Item is not equippable");
       return false;
@@ -281,7 +292,8 @@ public class Player {
       int d = -1;
       try {
         d = Integer.parseInt(decision);
-      } catch (NumberFormatException e) {}
+      } catch (NumberFormatException e) {
+      }
       if (d == -1 || d >= possibleEquipSlots.size()) {
         IO.println("Please enter a number between 0 and " + (possibleEquipSlots.size() - 1));
       } else {
@@ -289,6 +301,20 @@ public class Player {
       }
     }
     return equip(slotToEquipTo, itemToEquip);
+  }
+
+  public boolean attemptToUse(String itemName) {
+    Item itemToUse = findItem(itemName);
+    if (itemToUse == null) {
+      IO.println("No item found");
+      return false;
+    } else if (!(itemToUse instanceof Consumable)) {
+      IO.println("You can't use this item that way!");
+      return false;
+    } else {
+      ((Consumable) itemToUse).use(this);
+      return true;
+    }
   }
 
   public boolean attemptToUnequip(String itemName) {
@@ -344,33 +370,45 @@ public class Player {
   }
 
   public String vitalsToString() {
-    return "\nHP: " + hp + "/" + getMaxHp() + " | XP: " + xp + " | Gold: " + gold + "\n";
+    return String.format("\nHP: %d/%d | XP: %d | Gold: %d\n", hp, getMaxHp(), xp, gold);
   }
 
   public String baseStatsToString() {
-    return "\nVIT: " + getBaseVit() + " | DEX:" + getBaseDex() + " | STR: " + getBaseStr() + " | INT: " + getBaseInt() + "\n";
+    return String.format("\nVIT: %d | DEX: %d | STR: %d | INT: %d\n", getBaseVit(), getBaseDex(), getBaseStr(), getBaseInt());
   }
 
   public String statsToString() {
-    return "\nVIT: " + getVit() + " | DEX:" + getDex() + " | STR: " + getStr() + " | INT: " + getInt() +
-            "\n\nPHYS DEF: " + getPhysDef() + " | PHYS DMG: " + getPhysDmg() + "\n";
+    return String.format("\nVIT: %d | DEX: %d | STR: %d | INT: %d\n\nPHYS DEF: %d\n", getVit(), getDex(), getStr(), getInt(), getPhysDef());
   }
 
   public String equippedToString() {
     List<String> sortedKeys = new ArrayList<String>(equipSlots.keySet());
     Collections.sort(sortedKeys);
+    String formatString = "%-16s%-24s%-8s%8s\n";
     String output;
+
+    String title = "------------------------------------------------------------\n";
+    title += String.format(formatString, "Equip Slot", "Item Name", "Dmg", "Modifiers");
+    title += "------------------------------------------------------------";
     String outputHands = "";
     String outputBody = "";
     String outputAccessories = "";
     for (String s : sortedKeys) {
       EquipSlot e = equipSlots.get(s);
-      String slotStr = String.format("%1$-20s", s + ":");
+      String slotStr = s;
       String itemStr = (e.item == null) ? "(empty)" : e.item.getName();
+      String dmgStr = "";
+      String modStr = "";
       if (e.item != null) {
-        itemStr += String.format("%1$25s", e.item.modifiersToString());
+        if (e.item instanceof Weapon) {
+          dmgStr = Integer.toString(((Weapon) e.item).getAttackRating(this));
+        }
+          modStr = e.item.modifiersToString();
+
       }
-      output = (slotStr + itemStr + "\n");
+
+      output = String.format(formatString, s, itemStr, dmgStr, modStr);
+
       if (s.contains("Hand")) {
         outputHands += output;
       } else if (s.contains("Accessory")) {
@@ -379,7 +417,7 @@ public class Player {
         outputBody += output;
       }
     }
-    return "\n" + outputHands + "\n" + outputBody + "\n" + outputAccessories;
+    return "\n" + title + "\n" + outputHands + "\n" + outputBody + "\n" + outputAccessories;
   }
 
   public String inventoryToString() {
