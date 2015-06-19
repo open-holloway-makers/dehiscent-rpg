@@ -3,6 +3,7 @@ package core;
 import items.*;
 import map.WorldPoint;
 
+import javax.swing.text.html.Option;
 import java.util.*;
 
 public class Player {
@@ -237,30 +238,25 @@ public class Player {
   }
 
   public boolean attemptToInspect(String itemName) {
-    Item itemToInspect = findItem(itemName);
-    if (itemToInspect == null) {
-      for (String key : equipSlots.keySet()) {
-        EquipSlot e = equipSlots.get(key);
-        if (e.item != null && e.item.getName().equalsIgnoreCase(itemName)) {
-          itemToInspect = e.item;
-          break;
-        }
-      }
-    }
-    if (itemToInspect != null) {
+    Optional<Item> itemToInspect = findItem(itemName)
+            .map(Optional::of)
+            .orElse(findEquippedItem(itemName));
+    if (itemToInspect.isPresent())
       IO.println(itemToInspect.toString());
-      return true;
-    }
-    return false;
+    return itemToInspect.isPresent();
   }
 
-  public Item findItem(String itemName) {
-    for (Item i : inventory) {
-      if (i.getName().equalsIgnoreCase(itemName)) {
-        return i;
-      }
-    }
-    return null;
+  public Optional<Item> findItem(String itemName) {
+    return inventory.parallelStream()
+            .filter(i -> i.getName().equalsIgnoreCase(itemName)).findAny();
+  }
+
+  public Optional<Item> findEquippedItem(String itemName) {
+    return equipSlots.values().parallelStream()
+            .map(e -> e.item)
+            .filter(Objects::nonNull)
+            .filter(i -> i.getName().equalsIgnoreCase(itemName))
+            .findAny();
   }
 
   public boolean attemptToEquip(String s) {
@@ -403,7 +399,7 @@ public class Player {
         if (e.item instanceof Weapon) {
           dmgStr = Integer.toString(((Weapon) e.item).getAttackRating(this));
         }
-          modStr = e.item.modifiersToString();
+        modStr = e.item.modifiersToString();
 
       }
 
