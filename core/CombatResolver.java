@@ -31,7 +31,7 @@ public class CombatResolver {
         if (player.getEquipSlots().get(hands.get(i)).isFree()) {
           IO.print("\t\t(empty)\n");
         } else {
-          IO.print("\t\t" + player.getEquipSlots().get(hands.get(i)).item.getName() + "\n");
+          IO.print("\t\t" + player.getEquipSlots().get(hands.get(i)).getItem().getName() + "\n");
         }
       }
       Weapon weaponToAttackWith = null;
@@ -42,13 +42,14 @@ public class CombatResolver {
         try {
           d = Integer.parseInt(decision);
         } catch (NumberFormatException exception) {
+          // Don't set d, let d carry through to next error handling if block
         }
         if (d == -1 || d >= hands.size()) {
           IO.printf("Please enter a number between 0 and %d\n\n", (hands.size() - 1));
         } else {
-          Item item = player.getEquipSlots().get(hands.get(d)).item;
+          Item item = player.getEquipSlots().get(hands.get(d)).getItem();
           if (item instanceof Weapon) {
-            weaponToAttackWith = (Weapon) player.getEquipSlots().get(hands.get(d)).item;
+            weaponToAttackWith = (Weapon) player.getEquipSlots().get(hands.get(d)).getItem();
           } else {
             IO.println("That won't make a very good weapon...\n");
             weaponToAttackWith = new Weapon("Bogus weapon", 0, SlotType.HAND, null, 5, 0, Rating.U, Rating.U, Rating.U);

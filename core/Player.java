@@ -5,8 +5,9 @@ import map.WorldPoint;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-public class Player {
+public abstract class Player {
 
   protected int hp, xp, gold;
   protected int physicalDefence;
@@ -21,16 +22,28 @@ public class Player {
   protected List<Item> hiddenInventory;
 
   public Player() {
-    initBaseStats();
-    initVitals();
     position = new WorldPoint(0, 0);
-    visitedPoints = new ArrayList<WorldPoint>();
+    visitedPoints = new ArrayList<>();
     visitedPoints.add(position);
 
-    inventory = new ArrayList<Item>();
-    hiddenInventory = new ArrayList<Item>();
+    inventory = new ArrayList<>();
+    hiddenInventory = new ArrayList<>();
 
-    equipSlots = new HashMap<String, EquipSlot>();
+    initEquipSlots();
+
+    initBaseStats();
+    initVitals();
+    initEquipped();
+  }
+
+  public abstract void initBaseStats();
+
+  public abstract void initVitals();
+
+  public abstract void initEquipped();
+
+  public void initEquipSlots() {
+    equipSlots = new HashMap<>();
     equipSlots.put("Left Hand", new EquipSlot(SlotType.HAND, null));
     equipSlots.put("Right Hand", new EquipSlot(SlotType.HAND, null));
     equipSlots.put("Head", new EquipSlot(SlotType.HEAD, null));
@@ -44,20 +57,6 @@ public class Player {
     equipSlots.put("Accessory (4)", new EquipSlot(SlotType.ACCESSORY, null));
   }
 
-  public void initBaseStats() {
-    this.vitality = 6;
-    this.dexterity = 6;
-    this.strength = 6;
-    this.intelligence = 6;
-    this.physicalDefence = 0;
-  }
-
-  public void initVitals() {
-    this.hp = this.getMaxHp();
-    this.xp = 0;
-    this.gold = 0;
-  }
-
   public void addHp(int x) {
     hp = java.lang.Math.min(hp + x, getMaxHp());
   }
@@ -67,19 +66,30 @@ public class Player {
   }
 
   public void addGold(int x) {
-    gold += x;
+    addGold(x, false);
   }
 
   public void subGold(int x) {
-    gold -= x;
+    subGold(x, false);
   }
 
   public void addXp(int x) {
-    xp += x;
+    addXp(x, false);
   }
 
-  public void subXp(int x) {
-    xp -= x;
+  public void addGold(int x, boolean suppress) {
+    if (!suppress) IO.printf("You gained %d gold.\n", x);
+    gold += x;
+  }
+
+  public void subGold(int x, boolean suppress) {
+    if (!suppress) IO.printf("You lost %d gold.\n", x);
+    gold -= x;
+  }
+
+  public void addXp(int x, boolean suppress) {
+    if (!suppress) IO.printf("You gained %d xp.\n", x);
+    xp += x;
   }
 
   public void fullHeal() {
@@ -218,8 +228,12 @@ public class Player {
   }
 
   public void lose(Item i, boolean suppress) {
-    if (!suppress) IO.println(i.getName() + " removed from inventory.");
-    inventory.remove(i);
+    if (findInventoryItem(i.getName()).isPresent() || findEquippedItem(i.getName()).isPresent()) {
+      if (findEquippedItem(i.getName()).isPresent())
+        attemptToUnequip(i.getName());
+      inventory.remove(i);
+      if (!suppress) IO.println(i.getName() + " removed from inventory.");
+    }
   }
 
   public void obtainHidden(Item i) {
@@ -247,23 +261,23 @@ public class Player {
   }
 
   public void die() {
-    visitedPoints = new ArrayList<WorldPoint>();
+    visitedPoints = new ArrayList<>();
     setPosition(0, 0);
     fullHeal();
     gold /= 2;
   }
 
   public boolean attemptToInspect(String itemName) {
-    Optional<Item> itemToInspect = findItem(itemName)
-            .map(Optional::of)
-            .orElse(findEquippedItem(itemName));
-    if (itemToInspect.isPresent())
-      IO.println(itemToInspect.toString());
+    Optional<Item> itemToInspect = findItem(itemName);
+    if (itemToInspect.isPresent() && itemToInspect.get() instanceof Weapon)
+      IO.println(((Weapon) itemToInspect.get()).toString(this));
+    else if (itemToInspect.isPresent())
+      IO.println(itemToInspect.get().toString());
     return itemToInspect.isPresent();
   }
 
   public boolean attemptToUse(String itemName) {
-    Optional<Item> itemToUse = findItem(itemName);
+    Optional<Item> itemToUse = findInventoryItem(itemName);
     if (itemToUse.isPresent()) {
       if (!(itemToUse.get() instanceof Consumable)) {
         IO.println("You can't use this item that way!");
@@ -278,13 +292,29 @@ public class Player {
   }
 
   public Optional<Item> findItem(String itemName) {
+    return findInventoryItem(itemName)
+            .map(Optional::of)
+            .orElse(findEquippedItem(itemName));
+  }
+
+  public List<Item> getAllKnownItems() {
+    List<Item> equippedItems = getEquipSlots().values()
+            .parallelStream()
+            .map(EquipSlot::getItem)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
+    equippedItems.addAll(getInventory());
+    return equippedItems;
+  }
+
+  public Optional<Item> findInventoryItem(String itemName) {
     return inventory.parallelStream()
             .filter(i -> i.getName().equalsIgnoreCase(itemName)).findAny();
   }
 
   public Optional<Item> findEquippedItem(String itemName) {
     return equipSlots.values().parallelStream()
-            .map(e -> e.item)
+            .map(e -> e.getItem())
             .filter(Objects::nonNull)
             .filter(i -> i.getName().equalsIgnoreCase(itemName))
             .findAny();
@@ -293,26 +323,19 @@ public class Player {
 
   public Optional<EquipSlot> findEquippedItemSlot(String itemName) {
     return equipSlots.values().parallelStream()
-            .filter(e -> Objects.nonNull(e.item)
-                    && e.item.getName().equalsIgnoreCase(itemName))
+            .filter(e -> Objects.nonNull(e.getItem())
+                    && e.getItem().getName().equalsIgnoreCase(itemName))
             .findAny();
   }
 
-  public boolean attemptToEquip(String s) {
-    Optional<Item> itemOptional = findItem(s);
-    if (!itemOptional.isPresent()) {
-      IO.println("No item found");
-      return false;
-    }
-    Item itemToEquip = itemOptional.get();
-
+  public boolean attemptToEquip(Item itemToEquip) {
     if (!itemToEquip.isEquippable()) {
       IO.println("Item is not equippable");
       return false;
     }
     List<String> possibleEquipSlots = equipSlots.entrySet().parallelStream()
-            .filter(e -> e.getValue().slotType == itemToEquip.getSlotType())
-            .map(e -> e.getKey())
+            .filter(e -> e.getValue().getSlotType() == itemToEquip.getSlotType())
+            .map(Map.Entry::getKey)
             .sorted()
             .collect(Collectors.toList());
 
@@ -320,22 +343,27 @@ public class Player {
     if (possibleEquipSlots.size() == 1) {
       slotToEquipTo = equipSlots.get(possibleEquipSlots.get(0));
     } else if (possibleEquipSlots.size() > 1) {
-      for (int i = 0; i < possibleEquipSlots.size(); i++) {
-        IO.println(i + ": " + possibleEquipSlots.get(i));
-      }
-      String decision = IO.getDecision("Which slot would you like to equip to? ");
-      int d = -1;
-      try {
-        d = Integer.parseInt(decision);
-      } catch (NumberFormatException e) {
-      }
-      if (d == -1 || d >= possibleEquipSlots.size()) {
-        IO.println("Please enter a number between 0 and " + (possibleEquipSlots.size() - 1));
-      } else {
-        slotToEquipTo = equipSlots.get(possibleEquipSlots.get(d));
-      }
+      IntStream.range(0, possibleEquipSlots.size())
+              .forEachOrdered(i -> IO.println(i + ": " + possibleEquipSlots.get(i)));
+
+      double d = IO.getNumberWithinRange(
+              "Which slot would you like to equip to? ",
+              0, possibleEquipSlots.size() - 1);
+
+      if (d > Double.NEGATIVE_INFINITY)
+        slotToEquipTo = equipSlots.get(possibleEquipSlots.get((int) d));
     }
     return equip(slotToEquipTo, itemToEquip);
+  }
+
+  public boolean attemptToEquip(String s) {
+    Optional<Item> itemOptional = findInventoryItem(s);
+    if (!itemOptional.isPresent()) {
+      IO.println("No item found");
+      return false;
+    }
+    Item itemToEquip = itemOptional.get();
+    return attemptToEquip(itemToEquip);
   }
 
   public boolean attemptToUnequip(String itemName) {
@@ -346,7 +374,7 @@ public class Player {
     if (slotToEquipTo != null) {
       unequip(slotToEquipTo);
       Modifier.apply(itemToEquip.getModifiers(), this);
-      slotToEquipTo.item = itemToEquip;
+      slotToEquipTo.setItem(itemToEquip);
       inventory.remove(itemToEquip);
       IO.println(itemToEquip.getName() + " equipped.");
       return true;
@@ -355,11 +383,11 @@ public class Player {
   }
 
   public boolean unequip(EquipSlot slotToUnequipFrom) {
-    if (slotToUnequipFrom.item != null) {
-      Modifier.remove(slotToUnequipFrom.item.getModifiers(), this);
-      inventory.add(slotToUnequipFrom.item);
-      IO.println(slotToUnequipFrom.item.getName() + " unequipped.");
-      slotToUnequipFrom.item = null;
+    if (slotToUnequipFrom.getItem() != null) {
+      Modifier.remove(slotToUnequipFrom.getItem().getModifiers(), this);
+      inventory.add(slotToUnequipFrom.getItem());
+      IO.println(slotToUnequipFrom.getItem().getName() + " unequipped.");
+      slotToUnequipFrom.setItem(null);
       return true;
     }
     return false;
@@ -378,7 +406,7 @@ public class Player {
   }
 
   public String equippedToString() {
-    List<String> sortedKeys = new ArrayList<String>(equipSlots.keySet());
+    List<String> sortedKeys = new ArrayList<>(equipSlots.keySet());
     Collections.sort(sortedKeys);
     String formatString = "%-16s%-24s%-8s%8s\n";
     String output;
@@ -391,15 +419,14 @@ public class Player {
     String outputAccessories = "";
     for (String s : sortedKeys) {
       EquipSlot e = equipSlots.get(s);
-      String slotStr = s;
-      String itemStr = (e.item == null) ? "(empty)" : e.item.getName();
+      String itemStr = (e.getItem() == null) ? "(empty)" : e.getItem().getName();
       String dmgStr = "";
       String modStr = "";
-      if (e.item != null) {
-        if (e.item instanceof Weapon) {
-          dmgStr = Integer.toString(((Weapon) e.item).getAttackRating(this));
+      if (e.getItem() != null) {
+        if (e.getItem() instanceof Weapon) {
+          dmgStr = Integer.toString(((Weapon) e.getItem()).getAttackRating(this));
         }
-        modStr = e.item.modifiersToString();
+        modStr = e.getItem().modifiersToString();
       }
       output = String.format(formatString, s, itemStr, dmgStr, modStr);
 
@@ -416,8 +443,25 @@ public class Player {
 
   public String inventoryToString() {
     return inventory.stream()
-            .map(i -> i.getName())
+            .map(Item::getName)
             .sorted()
             .reduce("", (a, b) -> a.concat(b + "\n"));
+  }
+
+  public String verboseEquippedToString() {
+    Item[] items = getEquipSlots().values().stream()
+            .map(EquipSlot::getItem)
+            .toArray(Item[]::new);
+
+    StringBuilder output = new StringBuilder();
+    for (Item i : items) {
+      if (i == null)
+        ;
+      else if (i instanceof Weapon)
+        output.append(((Weapon)i).toString(this));
+      else
+        output.append(i.toString());
+    }
+    return output.toString();
   }
 }

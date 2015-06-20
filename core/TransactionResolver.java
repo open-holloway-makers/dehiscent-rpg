@@ -37,7 +37,7 @@ public class TransactionResolver {
   }
 
   public static void sell(Player p, Merchant m, String itemName) {
-    Optional<Item> itemToSell = p.findItem(itemName);
+    Optional<Item> itemToSell = p.findInventoryItem(itemName);
     if (itemToSell.isPresent())
       sell(p, m, itemName, String.format("Want to sell a %s for %d gold? ",
               itemName, m.getAdjustedBuyingPrice(itemToSell.get())));
@@ -59,7 +59,7 @@ public class TransactionResolver {
   }
 
   public static void sell(Player p, Merchant m, String itemName, String confirmationMessage) {
-    Optional<Item> itemToSell = p.findItem(itemName);
+    Optional<Item> itemToSell = p.findInventoryItem(itemName);
     if (itemToSell.isPresent()) {
       int adjustedPrice = m.getAdjustedBuyingPrice(itemToSell.get());
       String d = IO.getDecision(confirmationMessage);

@@ -13,8 +13,8 @@ public class Dehiscent {
 
     // Suppress console output during setup
     OutputStream realSystemOut = System.out;
-
     System.setOut(IO.getNullPrintStream());
+
     Map overworld = createMap();   
     Player p = new Wanderer();
 
@@ -72,6 +72,9 @@ public class Dehiscent {
           if (decision.contains(" vitals")) {
             IO.println(p.vitalsToString());
           }
+          if (decision.contains(" current")) {
+            IO.println(p.verboseEquippedToString());
+          }
           if (decision.contains(" equip")) {
             IO.println(p.equippedToString());
           }
@@ -109,12 +112,7 @@ public class Dehiscent {
   public static Map createMap() {
     Map overworld = new Map();
     overworld.setCell(0, 0, new HomeCell());
-    overworld.setCell(-1, 0, new HelmCell());
-    overworld.setCell(-1, -1, new ThreeTest());
-    overworld.setCell(0, -1, new FourTest());
-    overworld.setCell(1, 1, new Beggar());
-    overworld.setCell(1, 1, new OneTest());
-    overworld.setCell(1, 1, new TwoTest());
+    overworld.setCell(1, -1, new FromRuggedToRiches());
     return overworld;
   }
 }

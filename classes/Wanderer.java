@@ -2,15 +2,12 @@ package classes;
 
 import core.Player;
 import core.Stat;
-import items.Item;
-import items.Modifier;
-import items.SlotType;
+import items.*;
 
 public class Wanderer extends Player {
 
   public Wanderer() {
     super();
-    initEquipped();
   }
 
   @Override
@@ -29,15 +26,25 @@ public class Wanderer extends Player {
     this.gold = 0;
   }
 
+  @Override
   public void initEquipped() {
-    Item ruggedTabbard = new Item("Rugged Tabbard", 2, SlotType.CHEST, new Modifier(Stat.PHYS_DEF, 5));
-    Item leatherGreaves = new Item("Leather Greaves", 4, SlotType.LEGS, new Modifier(Stat.PHYS_DEF, 4));
-    Item leatherGloves = new Item("Leather Gloves", 4, SlotType.ARMS, new Modifier(Stat.PHYS_DEF, 4));
-    obtain(ruggedTabbard);
-    obtain(leatherGreaves);
-    obtain(leatherGloves);
-    attemptToEquip(ruggedTabbard.getName());
-    attemptToEquip(leatherGreaves.getName());
-    attemptToEquip(leatherGloves.getName());
+    Item leatherTabbard = new Item("Leather Tabbard", 4, SlotType.CHEST, new Modifier(Stat.PHYS_DEF, 5));
+    Item ruggedGreaves = new Item("Rugged Greaves", 2, SlotType.LEGS, new Modifier(Stat.PHYS_DEF, 4));
+    Item ruggedGloves = new Item("Rugged Gloves", 2, SlotType.ARMS, new Modifier(Stat.PHYS_DEF, 4));
+    Item ruggedBoots = new Item("Rugged Boots", 2, SlotType.FEET, new Modifier(Stat.PHYS_DEF, 3));
+
+    Weapon rock = new Weapon("Rock", 2, SlotType.HAND, null, 8, 0, Rating.U, Rating.U, Rating.U);
+
+    ruggedBoots.setLoreText("Strange boots from the ancient land of Zena, birthplace of the curious dealer Domhnall." +
+            "The inlaid silver rings symbolize an explorer.");
+
+    rock.setLoreText("Strange boots from the ancient land of Zena, birthplace of the curious dealer Domhnall." +
+            "The inlaid silver rings symbolize an explorer.");
+
+    obtain(rock);
+    attemptToEquip(leatherTabbard);
+    attemptToEquip(ruggedGreaves);
+    attemptToEquip(ruggedGloves);
+    attemptToEquip(ruggedBoots);
   }
 }

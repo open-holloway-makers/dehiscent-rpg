@@ -21,10 +21,10 @@ public enum SlotType {
   }
 
   public boolean isUnique(List<EquipSlot> slots) {
-    return slots.parallelStream().filter(s -> s.slotType == this).count() == 1;
+    return slots.parallelStream().filter(s -> s.getSlotType() == this).count() == 1;
   }
 
   public boolean isAvailable(List<EquipSlot> slots) {
-    return slots.parallelStream().anyMatch(s -> s.slotType == this && s.isFree());
+    return slots.parallelStream().anyMatch(s -> s.getSlotType() == this && s.isFree());
   }
 }
