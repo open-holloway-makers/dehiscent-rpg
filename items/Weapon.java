@@ -25,20 +25,24 @@ public class Weapon extends Item {
     this.intelligenceScaling = new ScalingPair(Stat.INT, intelligence);
   }
 
-  public int getAttackRating(Player p) {
+  public int getAttackRating(Player player) {
     return (int) java.lang.Math.ceil((
-            getPhysicalAttackRating(p) + getMagicAttackRating(p)) *
+            getCompositeAttackRating(player)) *
             ((new Random().nextInt(10) + 95) / 100.0));
   }
 
-  public double getPhysicalAttackRating(Player p) {
-    return baseDamage *
-            (1 + strengthScaling.getRating().getValue() * (p.getStr() * 0.02)) *
-            (1 + dexterityScaling.getRating().getValue() * (p.getDex() * 0.02));
+  public double getCompositeAttackRating(Player player) {
+    return getPhysicalAttackRating(player) + getMagicAttackRating(player);
   }
 
-  public double getMagicAttackRating(Player p) {
-    return baseMagicDamage *= (1 + intelligenceScaling.getRating().getValue() * (p.getInt() * 0.02));
+  private double getPhysicalAttackRating(Player player) {
+    return baseDamage *
+            (1 + strengthScaling.getRating().getValue() * (player.getStr() * 0.02)) *
+            (1 + dexterityScaling.getRating().getValue() * (player.getDex() * 0.02));
+  }
+
+  private double getMagicAttackRating(Player player) {
+    return baseMagicDamage *= (1 + intelligenceScaling.getRating().getValue() * (player.getInt() * 0.02));
   }
 
   public double getBaseDamage() {
@@ -58,15 +62,21 @@ public class Weapon extends Item {
   }
 
   public String toString(Player player) {
-    final int len = 60;
+    final int len = IO.BOX_WIDTH;
     return "\n" +
             IO.formatBanner(len) +
             IO.formatOpposite(len, getName(), getValue() + " gold") +
             IO.formatBanner(len) +
             IO.formatOpposite(len, "Equip to:", (isEquippable()) ? getSlotType().getValue().toString() : "n/a") +
             IO.formatOpposite(len, "Modifier:", (getModifiers().size() > 0) ? modifiersToString() : "n/a") +
-            IO.formatOpposite(len, "Physical Damage:", String.format("(%d)+%d", (int) getBaseDamage(), (int) (getAttackRating(player) - getMagicAttackRating(player)))) +
-            IO.formatOpposite(len, "Magic Damage:", String.format("(%d)+%d", (int) getBaseMagicDamage(), (int) (getAttackRating(player) - getPhysicalAttackRating(player)))) +
-            IO.formatAsBox(getLoreText(), len);
+            IO.formatOpposite(len, "Physical Damage:", String.format("(%d)+%d", (int) getBaseDamage(),
+                    (int) (getPhysicalAttackRating(player) - getBaseDamage()))) +
+            IO.formatOpposite(len, "Magic Damage:", String.format("(%d)+%d", (int) getBaseMagicDamage(),
+                    (int) (getMagicAttackRating(player) - getBaseMagicDamage()))) +
+            IO.formatBanner(len) +
+            IO.formatOpposite(len, "STR Scaling:", strengthScaling.getRating().toString()) +
+            IO.formatOpposite(len, "DEX Scaling:", dexterityScaling.getRating().toString()) +
+            IO.formatOpposite(len, "INT Scaling:", intelligenceScaling.getRating().toString()) +
+            IO.formatAsBox(getLoreText(), len, true);
   }
 }

@@ -6,7 +6,12 @@ import java.io.PrintStream;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
+
 public class IO {
+
+  public final static int PARA_WIDTH = 70;
+  public final static int BOX_WIDTH = 60;
+
   // Decisions are always lower case
   public static String getDecision(String s) {
     print(s);
@@ -38,11 +43,15 @@ public class IO {
   }
 
   // Just because there's gonna be a lot of printing...
-  public static void print(String s) {
+  public static void print(Object s) {
     System.out.print(s);
   }
 
-  public static void println(String s) {
+  public static void println() {
+    System.out.println();
+  }
+
+  public static void println(Object s) {
     System.out.println(s);
   }
 
@@ -50,8 +59,12 @@ public class IO {
     System.out.format(format, arguments);
   }
 
+  public static void debug(Object s) {
+    System.out.println(s);
+  }
+
   public static String repeatString(String str, int n) {
-    StringBuffer outputBuffer = new StringBuffer(n);
+    StringBuffer outputBuffer = new StringBuffer();
     for (int i = 0; i < n; i++) {
       outputBuffer.append(str);
     }
@@ -68,31 +81,43 @@ public class IO {
     return String.format(formatString, str1, str2);
   }
 
-  public static String formatAsBox(String input, int maxLineLength){
-    maxLineLength = maxLineLength - 4;
+  public static String formatAsBox(String input, int maxLineLength, boolean bordered) {
+    if (bordered) {
+      maxLineLength = maxLineLength - 4;
+    }
     StringTokenizer tok = new StringTokenizer(input, " ");
     StringBuilder output = new StringBuilder(input.length());
-    output.append(formatBanner(maxLineLength + 4));
-    output.append("| ");
+    if (bordered) {
+      output.append(formatBanner(maxLineLength + 4));
+      output.append("| ");
+    } else {
+      output.append("\n");
+    }
+    String newline = (bordered) ? " |\n| " : "\n";
     int lineLen = 0;
     while (tok.hasMoreTokens()) {
       String word = tok.nextToken();
 
       while(word.length() > maxLineLength){
         output.append(word.substring(0, maxLineLength - lineLen) +
-                IO.repeatString(" ", maxLineLength - lineLen) + " |\n| ");
+                IO.repeatString(" ", maxLineLength - lineLen) + newline);
         word = word.substring(maxLineLength-lineLen);
         lineLen = 0;
       }
       if (lineLen + word.length() > maxLineLength) {
-        output.append(IO.repeatString(" ", maxLineLength - lineLen) + " |\n| ");
+
+        output.append(IO.repeatString(" ", maxLineLength - lineLen) + newline);
         lineLen = 0;
       }
       output.append(word + " ");
       lineLen += word.length() + 1;
     }
-    output.append(IO.repeatString(" ", maxLineLength - lineLen) + " |\n");
-    output.append(formatBanner(maxLineLength + 4));
+    if (bordered) {
+      output.append(IO.repeatString(" ", maxLineLength - lineLen) + " |\n");
+      output.append(formatBanner(maxLineLength + 4));
+    } else {
+      output.append("\n\n");
+    }
     return output.toString();
   }
 

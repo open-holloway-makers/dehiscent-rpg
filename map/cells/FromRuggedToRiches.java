@@ -5,11 +5,14 @@ import core.Player;
 import core.Stat;
 import items.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class FromRuggedToRiches implements Cell {
 
-  private int encounterCount = 0;
+  private int encounterValue = 0;
 
   @Override
   public char getMapIcon() {
@@ -18,81 +21,125 @@ public class FromRuggedToRiches implements Cell {
 
   @Override
   public void explore(Player p) {
-    IO.println("There's nobody else around except the beggar.");
+    if (encounterValue == -1) {
+      IO.println("\nIt's pretty empty around here now that the vagrant has gone.");
+    } else {
+      IO.println("\nThere's nobody else around except the vagrant.");
+    }
   }
 
   @Override
   public void event(Player p) {
+    if (encounterValue == 0) {
 
-    {
-      if (encounterCount == 0) {
-        IO.println("A vagrant draped only in rags approaches you.");
-        IO.println("\"Spare me some shoes would you?\"\n");
-        Item[] possibleGifts = p.getAllKnownItems()
-                .parallelStream()
-                .filter(i -> i.getSlotType() == SlotType.FEET)
-                .sorted()
-                .toArray(Item[]::new);
+      IO.print(IO.formatAsBox(
+              "A sorry looking vagrant approaches you. His rags are filthy and his " +
+                      "feet are scabbed and bloody."
+              , IO.PARA_WIDTH, false));
 
-        IntStream.range(0, possibleGifts.length)
-                .forEachOrdered(i -> IO.println(i + ": " + possibleGifts[i].getName()));
+      IO.print(IO.formatAsBox(
+              "\"You couldn't spare some shoes so that I can protect my tired feet " +
+                      "from the cold, rough earth, could you?\""
+              , IO.PARA_WIDTH, false));
 
-        double d = IO.getNumberWithinRange(
-                "\nWould you like to choose some shoes to gift to the vagrant?\n",
-                0, possibleGifts.length - 1, true);
+      Item[] possibleShoes = p.getAllKnownItems()
+              .parallelStream()
+              .filter(i -> i.getSlotType() == SlotType.FEET)
+              .sorted()
+              .toArray(Item[]::new);
+
+      IntStream.range(0, possibleShoes.length)
+              .forEachOrdered(i -> IO.println(i + ": " + possibleShoes[i].getName()));
+
+      double d = IO.getNumberWithinRange(
+              "\nWould you like to choose some boots to gift to the vagrant?\n",
+              0, possibleShoes.length - 1, true);
+      if (d > Double.NEGATIVE_INFINITY) {
+        p.lose(possibleShoes[(int) d]);
+
+        IO.print(IO.formatAsBox(
+                "\"Thank you so much, you're very kind! With these I can begin making " +
+                        "my way to a new home, and start a new life! Please, take my " +
+                        "days earnings in return!\""
+                , IO.PARA_WIDTH, false));
+
+        p.addGold(2);
+        encounterValue++;
+      } else {
+
+        IO.print(IO.formatAsBox(
+                "You apologise to the poor man and continue on your way."
+                , IO.PARA_WIDTH, false));
+
+      }
+    } else if (encounterValue >= 1) {
+      List<Item> possibleGifts = p.getAllKnownItems()
+              .parallelStream()
+              .filter(i -> i.getName().toLowerCase().contains("rugged"))
+              .sorted((a, b) -> a.getName().compareToIgnoreCase(b.getName()))
+              .collect(Collectors.toList());
+
+      if (possibleGifts.size() > 0) {
+
+        if (encounterValue == 1) {
+
+          IO.print(IO.formatAsBox(
+                  "By the path is a vagrant. He's looking comfortable in his new shoes. " +
+                          "\"These shows are a perfect fit! But I'm worried they won't be " +
+                          "enough for me to travel too far, these rags hardly keep me warm!\""
+                  , IO.PARA_WIDTH, false));
+
+        } else {
+
+          IO.print(IO.formatAsBox(
+                  "You see the vagrant again, wearing some of your clothes. \"Thank you so " +
+                          "much! I'm almost ready to leave, but the nights are still hard.\""
+                  , IO.PARA_WIDTH, false));
+
+        }
+
+        IO.print(IO.formatAsBox(
+                "\"I have nothing left to offer you in return, but please, you wouldn't happen " +
+                        "to have something more rugged that I could wear, do you?\""
+                , IO.PARA_WIDTH, false));
+
+        IntStream.range(0, possibleGifts.size())
+                .forEachOrdered(i -> IO.println(i + ": " + possibleGifts.get(i).getName()));
+
+        Double d = IO.getNumberWithinRange(
+                "\nWould you like to choose a gift to give to the vagrant?\n",
+                0, possibleGifts.size() - 1, true);
+
         if (d > Double.NEGATIVE_INFINITY) {
-          p.lose(possibleGifts[(int) d]);
-          IO.println("\"Thank you so much, with these I can travel to better lands!\n" +
-                  "Take my days earnings for your trouble\"\n");
-          p.addGold(2);
-          encounterCount++;
+          p.lose(possibleGifts.get(d.intValue()));
+          possibleGifts.remove(d.intValue());
+
+          IO.println();
+          IO.print(IO.formatAsBox(
+                  "\"Thank you so much, these are just what I need to survive my long journey to a new life.\""
+                  , IO.PARA_WIDTH, false));
+
+          encounterValue++;
         }
       }
-      {
-        if (encounterCount >= 1) {
+      if (possibleGifts.size() == 0) {
 
-          Item[] possibleGifts = p.getAllKnownItems()
-                  .parallelStream()
-                  .filter(i -> i.getName().toLowerCase().contains("rugged"))
-                  .sorted()
-                  .toArray(Item[]::new);
+        IO.print(IO.formatAsBox(
+                "\"This is perfect! I think I'm ready to make a new life elsewhere now! " +
+                        "Thank you for all your help! Please, another traveller gave me " +
+                        "this but it's of no use to a simple man like me. You'll make " +
+                        "better use of it I think!\""
+                , IO.PARA_WIDTH, false));
 
-          if (possibleGifts.length > 0) {
-
-            if (encounterCount == 1) {
-              IO.println("By the path is a vagrant wearing some nice new shoes.");
-              IO.println("\"These shoes are perfect! But I'm worried I won't be able to leave" +
-                      "for a better place with only these rags.\"\n");
-            } else {
-              IO.println("You see the vagrant again, wearing some of your clothes");
-              IO.println("\"Thank you so much for these clothes! But I'm worried it's not" +
-                      "enough for me to begin my journey.\n");
-            }
-            IO.println("I have nothing left to offer you in return, but please, " +
-                    "you wouldn't happen to have something more rugged that I could wear, do you?\n");
-
-            IntStream.range(0, possibleGifts.length)
-                    .forEachOrdered(i -> IO.println(i + ": " + possibleGifts[i].getName()));
-
-            double d = IO.getNumberWithinRange(
-                    "\nWould you like to choose a gift to give to the vagrant?\n",
-                    0, possibleGifts.length - 1, true);
-            if (d > Double.NEGATIVE_INFINITY) {
-              p.lose(possibleGifts[(int) d]);
-              IO.println("\"Thank you so much, with these I can travel to better lands!\n" +
-                      "Take my days earnings for your trouble\"\n");
-              encounterCount++;
-            }
-          }
-          if (possibleGifts.length == 0) {
-            IO.println("\"I think I'm ready to make a new life elsewhere now! Thank you for all" +
-                    "your help! Please, another traveller gave me this but it's of no use to a simple" +
-                    "man like me. You'll make better use of it I think!\"");
-
-            Item batteredHelm = new Item("Battered iron helm", 20, SlotType.HEAD, new Modifier(Stat.PHYS_DEF, 15));
-            p.obtain(batteredHelm);
-          }
-        }
+        Item batteredIronHelm = new Item("Battered Iron Helm", 20, SlotType.HEAD, new Modifier(Stat.PHYS_DEF, 15));
+        // You can't have lore text without the phrase "It's definitely seen better days.."
+        batteredIronHelm.setLoreText(
+                "It's definitely seen better days, but it must have served someone well. The helmet " +
+                        "bears no obvious markings which might identify its maker; perhaps they've been " +
+                        "worn away or maybe the creator wasn't proud enough to put their name to it."
+        );
+        p.obtain(batteredIronHelm);
+        encounterValue = -1;
       }
     }
 

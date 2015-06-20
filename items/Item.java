@@ -60,14 +60,14 @@ public class Item {
 
   @Override
   public String toString() {
-    final int len = 60;
+    final int len = IO.BOX_WIDTH;
     return "\n" +
             IO.formatBanner(len) +
             IO.formatOpposite(len, getName(), getValue() + " gold") +
             IO.formatBanner(len) +
             IO.formatOpposite(len, "Equip to:", (isEquippable()) ? getSlotType().getValue().toString() : "n/a") +
             IO.formatOpposite(len, "Modifier:", (getModifiers().size() > 0) ? modifiersToString() : "n/a") +
-            IO.formatAsBox(getLoreText(), len);
+            IO.formatAsBox(getLoreText(), len, true);
   }
 
   public String modifiersToString() {

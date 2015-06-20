@@ -4,8 +4,10 @@ import items.*;
 import map.WorldPoint;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public abstract class Player {
 
@@ -406,8 +408,20 @@ public abstract class Player {
   }
 
   public String equippedToString() {
-    List<String> sortedKeys = new ArrayList<>(equipSlots.keySet());
-    Collections.sort(sortedKeys);
+
+    String[] sortedKeys = Stream.of(
+
+            equipSlots.keySet().stream().filter(x -> x.contains("Hand")),
+            equipSlots.keySet().stream().filter(x -> x.contains("Head")),
+            equipSlots.keySet().stream().filter(x -> x.contains("Chest")),
+            equipSlots.keySet().stream().filter(x -> x.contains("Arms")),
+            equipSlots.keySet().stream().filter(x -> x.contains("Legs")),
+            equipSlots.keySet().stream().filter(x -> x.contains("Feet")),
+            equipSlots.keySet().stream().filter(x -> x.contains("Accessory")).sorted())
+            .flatMap(x -> x)
+            .distinct()
+            .toArray(String[]::new);
+
     String formatString = "%-16s%-24s%-8s%8s\n";
     String output;
 
@@ -458,7 +472,7 @@ public abstract class Player {
       if (i == null)
         ;
       else if (i instanceof Weapon)
-        output.append(((Weapon)i).toString(this));
+        output.append(((Weapon) i).toString(this));
       else
         output.append(i.toString());
     }
