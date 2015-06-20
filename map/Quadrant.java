@@ -10,7 +10,7 @@ public class Quadrant {
 
   public Quadrant(int size) {
     this.size = size;
-    cells = new Cell[16][16];
+    cells = new Cell[size][size];
     for (int y = 0; y < size; y++) {
       for (int x = 0; x < size; x++) {
         cells[y][x] = new BlankCell();

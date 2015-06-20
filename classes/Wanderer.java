@@ -29,7 +29,6 @@ public class Wanderer extends Player {
     this.gold = 0;
   }
 
-  //public Item(String name, int value, SlotType slotType, Modifier modifier) {
   public void initEquipped() {
     Item ruggedTabbard = new Item("Rugged Tabbard", 2, SlotType.CHEST, new Modifier(Stat.PHYS_DEF, 5));
     Item leatherGreaves = new Item("Leather Greaves", 4, SlotType.LEGS, new Modifier(Stat.PHYS_DEF, 4));

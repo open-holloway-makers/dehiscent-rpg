@@ -6,6 +6,7 @@ import items.SaleItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Merchant {
 
@@ -21,7 +22,6 @@ public class Merchant {
     this.buyingModifier = buyingModifier;
     this.sellingModifier = sellingModifier;
     inventory = new ArrayList<SaleItem>();
-
   }
 
   public String getName() {
@@ -56,7 +56,6 @@ public class Merchant {
     this.gold = gold;
   }
 
-
   public void addGold(int gold) {
     this.gold += gold;
   }
@@ -65,30 +64,26 @@ public class Merchant {
     this.gold -= gold;
   }
 
-  public SaleItem findSaleItem(String itemName) {
-    for (SaleItem i : inventory) {
-      if (i.getItemForSale().getName().equalsIgnoreCase(itemName)) {
-        return i;
-      }
-    }
-    return null;
+  public Optional<SaleItem> findSaleItem(String itemName) {
+    return inventory.parallelStream()
+            .filter(i -> i.getItemForSale().getName().equalsIgnoreCase(itemName))
+            .findAny();
   }
 
   public boolean attemptToInspect(String itemName) {
-    Item itemToInspect = findSaleItem(itemName).getItemForSale();
-    if (itemToInspect != null) {
-      IO.println(itemToInspect.toString());
+    Optional<SaleItem> itemToInspectOption = findSaleItem(itemName);
+    if (itemToInspectOption.isPresent()) {
+      IO.println(itemToInspectOption.get().toString());
       return true;
     }
     return false;
   }
 
   public String inventoryToString() {
-    String output = "";
-    for (SaleItem i : inventory) {
-      output += i.getItemForSale().getName() + "\t" + i.getSalePrice() + "g\n";
-    }
-    return output;
+    return inventory.stream()
+            .map(i -> i.getItemForSale().getName() + "\t" + i.getSalePrice() + "g\n")
+            .sorted()
+            .reduce("", (a, b) -> a.concat(b));
   }
 
   /**

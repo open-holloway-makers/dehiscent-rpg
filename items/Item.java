@@ -68,11 +68,9 @@ public class Item {
   }
 
   public String modifiersToString() {
-    String output = "";
-    for (Modifier m : modifiers) {
-      output += (m.toString() + "  ");
-    }
-    return output;
+    return modifiers.stream()
+            .map(a -> a.toString())
+            .reduce("", (a, b) -> a.concat(b) + " ");
   }
 
   public int getValue() {

@@ -1,7 +1,5 @@
 package map;
 
-import java.util.Objects;
-
 public class LogicalPoint {
 
   private int q, x, y;

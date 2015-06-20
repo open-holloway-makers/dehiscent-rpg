@@ -97,8 +97,6 @@ public class Map {
     }
   }
 
-  // 23
-  // 10
   public void printMap() {
     int x, y;
     for (y = CURRENT_MAX_SIZE - 1; y >= 0; y--) {

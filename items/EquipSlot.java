@@ -12,6 +12,4 @@ public class EquipSlot {
   public boolean isFree() {
     return item == null;
   }
-
-
 }

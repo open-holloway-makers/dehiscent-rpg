@@ -10,7 +10,6 @@ public class SaleItem {
     this.salePrice = salePrice;
   }
 
-
   public Item getItemForSale() {
     return itemForSale;
   }
