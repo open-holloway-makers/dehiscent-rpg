@@ -30,6 +30,4 @@ public class Consumable extends Item {
       player.lose(this);
     }
   }
-
-
 }

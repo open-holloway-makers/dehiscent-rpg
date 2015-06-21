@@ -1,5 +1,7 @@
 package items;
 
+import core.IO;
+
 import java.util.ArrayList;
 
 public class Item {
@@ -13,7 +15,7 @@ public class Item {
   public Item(String name, int value) {
     this.name = name;
     this.value = value;
-    this.modifiers = new ArrayList<Modifier>();
+    this.modifiers = new ArrayList<>();
     this.slotType = null;
   }
 
@@ -21,12 +23,13 @@ public class Item {
     this.name = name;
     this.value = value;
     this.slotType = slotType;
-    modifiers = new ArrayList<Modifier>();
-    this.modifiers.add(modifier);
+    modifiers = new ArrayList<>();
+    if (modifier != null) this.modifiers.add(modifier);
   }
 
-  public Item(String name, SlotType slotType, ArrayList<Modifier> modifiers) {
+  public Item(String name, int value, SlotType slotType, ArrayList<Modifier> modifiers) {
     this.name = name;
+    this.value = value;
     this.slotType = slotType;
     this.modifiers = modifiers;
   }
@@ -35,12 +38,12 @@ public class Item {
     return name;
   }
 
-  public SlotType getSlotType() { return slotType; }
+  public SlotType getSlotType() {
+    return slotType;
+  }
 
-  public ArrayList<Modifier> getModifiers() { return modifiers; }
-
-  public Item(SlotType slotType) {
-    slotType = this.slotType;
+  public ArrayList<Modifier> getModifiers() {
+    return modifiers;
   }
 
   public boolean isEquippable() {
@@ -57,22 +60,20 @@ public class Item {
 
   @Override
   public String toString() {
-    String output = "\n";
-    output += ("Item: " + name + "\n");
-    if (isEquippable()) {
-      output += ("Equip to: " + slotType.getValue() + "\n");
-    }
-    output += modifiersToString();
-    output += "\n\n" + getLoreText();
-    return output;
+    final int len = IO.BOX_WIDTH;
+    return "\n" +
+            IO.formatBanner(len) +
+            IO.formatColumns(len, getName(), getValue() + " gold") +
+            IO.formatBanner(len) +
+            IO.formatColumns(len, "Equip to:", (isEquippable()) ? getSlotType().getValue().toString() : "n/a") +
+            IO.formatColumns(len, "Modifier:", (getModifiers().size() > 0) ? modifiersToString() : "n/a") +
+            IO.formatAsBox(getLoreText(), len, true);
   }
 
   public String modifiersToString() {
-    String output = "";
-    for (Modifier m : modifiers) {
-      output += (m.toString() + "  ");
-    }
-    return output;
+    return modifiers.stream()
+            .map(Modifier::toString)
+            .reduce("", (a, b) -> " " + a.concat(b));
   }
 
   public int getValue() {

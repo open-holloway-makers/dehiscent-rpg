@@ -1,17 +1,31 @@
 package items;
 
 public class EquipSlot {
-  public SlotType slotType;
-  public Item item;
+  private SlotType slotType;
+  private Item item;
 
   public EquipSlot(SlotType slotType, Item item) {
-    this.slotType = slotType;
-    this.item = item;
+    this.setSlotType(slotType);
+    this.setItem(item);
   }
 
   public boolean isFree() {
-    return item == null;
+    return getItem() == null;
   }
 
+  public SlotType getSlotType() {
+    return slotType;
+  }
 
+  public void setSlotType(SlotType slotType) {
+    this.slotType = slotType;
+  }
+
+  public Item getItem() {
+    return item;
+  }
+
+  public void setItem(Item item) {
+    this.item = item;
+  }
 }

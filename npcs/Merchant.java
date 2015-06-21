@@ -6,10 +6,12 @@ import items.SaleItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Merchant {
 
   private String name;
+  private String storeName;
   private int gold;
   private double buyingModifier;
   private double sellingModifier;
@@ -20,8 +22,7 @@ public class Merchant {
     this.gold = gold;
     this.buyingModifier = buyingModifier;
     this.sellingModifier = sellingModifier;
-    inventory = new ArrayList<SaleItem>();
-
+    inventory = new ArrayList<>();
   }
 
   public String getName() {
@@ -40,12 +41,31 @@ public class Merchant {
     this.inventory = inventory;
   }
 
-  public void obtain(Item item) {
-    inventory.add(new SaleItem(item, getAdjustedSellingPrice(item)));
+  public void obtain(Item item, int quantity) {
+    int index = -1;
+    for (SaleItem s : getInventory()) {
+      if (s.getItemForSale().getName().equals(item.getName()) &&
+              s.getItemForSale().getValue() == item.getValue()) {
+        index = getInventory().indexOf(s);
+      }
+    }
+    if (index >= 0) {
+      if (inventory.get(index).getQuantity() < Integer.MAX_VALUE) {
+        inventory.get(index).setQuantity(inventory.get(index).getQuantity() + 1);
+      }
+    } else {
+      inventory.add(new SaleItem(item, getAdjustedSellingPrice(item), quantity));
+    }
   }
 
-  public void lose(SaleItem i) {
-    inventory.remove(i);
+  public void lose(SaleItem item) {
+    int index = inventory.indexOf(item);
+    if (inventory.get(index).getQuantity() < Integer.MAX_VALUE) {
+      inventory.get(index).setQuantity(inventory.get(index).getQuantity() - 1);
+    }
+    if (inventory.get(index).getQuantity() <= 0) {
+      inventory.remove(index);
+    }
   }
 
   public int getGold() {
@@ -56,7 +76,6 @@ public class Merchant {
     this.gold = gold;
   }
 
-
   public void addGold(int gold) {
     this.gold += gold;
   }
@@ -65,37 +84,43 @@ public class Merchant {
     this.gold -= gold;
   }
 
-  public SaleItem findSaleItem(String itemName) {
-    for (SaleItem i : inventory) {
-      if (i.getItemForSale().getName().equalsIgnoreCase(itemName)) {
-        return i;
-      }
-    }
-    return null;
+  public Optional<SaleItem> findSaleItem(String itemName) {
+    return inventory.parallelStream()
+            .filter(i -> i.getItemForSale().getName().equalsIgnoreCase(itemName))
+            .findAny();
   }
 
   public boolean attemptToInspect(String itemName) {
-    Item itemToInspect = findSaleItem(itemName).getItemForSale();
-    if (itemToInspect != null) {
-      IO.println(itemToInspect.toString());
+    Optional<SaleItem> itemToInspectOption = findSaleItem(itemName);
+    if (itemToInspectOption.isPresent()) {
+      IO.println(itemToInspectOption.get().toString());
       return true;
     }
     return false;
   }
 
   public String inventoryToString() {
-    String output = "";
-    for (SaleItem i : inventory) {
-      output += i.getItemForSale().getName() + "\t" + i.getSalePrice() + "g\n";
+    StringBuilder output = new StringBuilder();
+    output.append("\n" + IO.formatBanner(IO.BOX_WIDTH));
+    output.append(IO.formatColumns(IO.BOX_WIDTH, false, true,
+            (getName() != null) ? getStoreName().toUpperCase() : "INVENTORY"));
+    output.append(IO.formatBanner(IO.BOX_WIDTH));
+    for (SaleItem s : getInventory()) {
+      output.append(
+              IO.formatColumns(IO.BOX_WIDTH, false, true,
+                      s.getItemForSale().getName(),
+                      s.getSalePrice() + " gold",
+                      ((s.getQuantity()) < Integer.MAX_VALUE ? "x" + s.getQuantity() : "\u221e" )));
     }
-    return output;
+    output.append(IO.formatBanner(IO.BOX_WIDTH));
+    return output.toString();
   }
 
   /**
-   This is the price a merchant will buy goods from you for
+   * This is the price a merchant will buy goods from you for
    */
   public int getAdjustedBuyingPrice(Item item) {
-    return item.getValue() * (int) java.lang.Math.floor(item.getValue() * buyingModifier);
+    return (int) java.lang.Math.floor(item.getValue() * buyingModifier);
   }
 
   /**
@@ -104,7 +129,14 @@ public class Merchant {
    * sold to the merchant
    */
   public int getAdjustedSellingPrice(Item item) {
-    return item.getValue() * (int) java.lang.Math.floor(item.getValue() * sellingModifier);
+    return (int) java.lang.Math.floor(item.getValue() * sellingModifier);
   }
 
+  public String getStoreName() {
+    return storeName;
+  }
+
+  public void setStoreName(String storeName) {
+    this.storeName = storeName;
+  }
 }

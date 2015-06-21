@@ -1,5 +1,6 @@
 package items;
 
+import core.IO;
 import core.Player;
 import core.Stat;
 
@@ -32,7 +33,7 @@ public class Modifier {
         player.addPhysDef(mod);
         break;
       default:
-        System.out.println("Stat not found...");
+        IO.println("Stat not found...");
     }
   }
 
@@ -41,9 +42,7 @@ public class Modifier {
   }
 
   public static void apply(List<Modifier> modifiers, Player player) {
-    for (Modifier modifier : modifiers) {
-      modifier.applyTo(player);
-    }
+    modifiers.parallelStream().forEach(m -> m.applyTo(player));
   }
 
   public void removeFrom(Player player) {
@@ -64,7 +63,7 @@ public class Modifier {
         player.addPhysDef(-mod);
         break;
       default:
-        System.out.println("Stat not found...");
+        IO.println("Stat not found...");
     }
   }
 
@@ -73,9 +72,7 @@ public class Modifier {
   }
 
   public static void remove(List<Modifier> modifiers, Player player) {
-    for (Modifier modifier : modifiers) {
-      modifier.removeFrom(player);
-    }
+    modifiers.parallelStream().forEach(m -> m.removeFrom(player));
   }
 
   @Override

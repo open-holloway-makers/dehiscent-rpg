@@ -17,7 +17,7 @@ public class WorldPoint {
 
   @Override
   public String toString() {
-    return "(" + x + ", " + y + ")";
+    return String.format("(%d, %d)", x, y);
   }
 
   @Override
