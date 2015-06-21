@@ -32,12 +32,12 @@ public class BlankCell implements Cell {
   }
 
   @Override
-  public void explore(Player p) {
+  public void explore(Player player) {
     IO.println("There's nothing of interest here...");
   }
 
   @Override
-  public void event(Player p) {
+  public void event(Player player) {
     IO.println("There's nothing here...");
   }
 }

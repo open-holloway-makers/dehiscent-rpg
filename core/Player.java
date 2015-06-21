@@ -456,10 +456,22 @@ public abstract class Player {
   }
 
   public String inventoryToString() {
-    return inventory.stream()
-            .map(Item::getName)
-            .sorted()
-            .reduce("", (a, b) -> a.concat(b + "\n"));
+    Map<Item, Long> invCount = getInventory()
+            .stream()
+            .sorted((a, b) -> a.getName().compareToIgnoreCase(b.getName()))
+            .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+    StringBuilder output = new StringBuilder();
+    output.append(IO.formatBanner(IO.BOX_WIDTH));
+    for (Map.Entry<Item, Long> e : invCount.entrySet()) {
+      output.append(IO.formatColumns(IO.BOX_WIDTH, false, true,
+              e.getKey().getName(),
+              (e.getKey().isEquippable()) ? e.getKey().getSlotType().toString() : "",
+              e.getKey().getValue() + "g",
+              "x" + e.getValue()));
+    }
+    output.append(IO.formatBanner(IO.BOX_WIDTH));
+    return output.toString();
   }
 
   public String verboseEquippedToString() {

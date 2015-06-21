@@ -31,14 +31,14 @@ public class FourTest implements Cell {
   }
 
   @Override 
-  public void explore(Player p) {
+  public void explore(Player player) {
     System.out.println("There's nothing of interest here...");
   }
 
   @Override 
-  public void event(Player p) {
+  public void event(Player player) {
     Enemy e = new Enemy("Imp", 30, 20, 20, 20);
-    CombatResolver.resolveCombat(p, e);
+    CombatResolver.resolveCombat(player, e);
     System.out.println("There's nothing here...");
   }
 }

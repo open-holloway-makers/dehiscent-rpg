@@ -15,20 +15,21 @@ public class Dehiscent {
     OutputStream realSystemOut = System.out;
     System.setOut(IO.getNullPrintStream());
 
-    Map overworld = createMap();   
+    Map overworld = createMap();
     Player p = new Wanderer();
+    p.addGold(50); // JUST FOR TESTING!!
 
     // Resume console output
     System.setOut(new PrintStream(realSystemOut));
 
-    for (;;) {
+    for (; ; ) {
       overworld.printKnownMap(p);
 
       Cell currentCell = overworld.fetchCell(p.getPosition());
       currentCell.event(p);
 
       Cell previousCell = currentCell;
-      while(currentCell == previousCell) {
+      while (currentCell == previousCell) {
         // TODO decision making code should be extracted and made reusable
         String decision = IO.getDecision("\nWhat will you do?\n");
         switch (decision) {
@@ -53,10 +54,11 @@ public class Dehiscent {
               p.goEast();
             break;
           case "v":
+          case "view":
             overworld.printKnownMapAlongsideStats(p);
             break;
         }
-        if (decision.startsWith("view" )|| decision.startsWith("v ")) {
+        if (decision.startsWith("view") || decision.startsWith("v ")) {
           if (decision.contains(" map")) {
             overworld.printKnownMap(p);
           }
@@ -79,14 +81,15 @@ public class Dehiscent {
             IO.println(p.equippedToString());
           }
           if (decision.contains(" inv")) {
-            IO.println("===============\n");
             IO.println(p.inventoryToString());
-            IO.println("===============");
+          }
+          if (decision.contains(" controls")) {
+            IO.println(controlsToString());
           }
         } else if (decision.startsWith("use") || decision.startsWith("u ")) {
           String itemName = decision.substring(decision.indexOf(" ")).trim();
           p.attemptToUse(itemName);
-        }else if (decision.startsWith("inspect") || decision.startsWith("i ")) {
+        } else if (decision.startsWith("inspect") || decision.startsWith("i ")) {
           String itemName = decision.substring(decision.indexOf(" ")).trim();
           p.attemptToInspect(itemName);
         } else if (decision.startsWith("explore") || decision.equals("x")) {
@@ -113,6 +116,37 @@ public class Dehiscent {
     Map overworld = new Map();
     overworld.setCell(0, 0, new HomeCell());
     overworld.setCell(1, -1, new FromRuggedToRiches());
+    overworld.setCell(1, 1, new LittleGrocerShop());
+
     return overworld;
+  }
+
+  public static String controlsToString() {
+    return IO.formatBanner(IO.BOX_WIDTH) +
+            IO.formatColumns(IO.BOX_WIDTH, "COMMAND", "HOTKEY", "EFFECT") +
+            IO.formatBanner(IO.BOX_WIDTH) +
+            IO.formatColumns(IO.BOX_WIDTH, "go north", "w", "Go north") +
+            IO.formatColumns(IO.BOX_WIDTH, "go south", "a", "Go south") +
+            IO.formatColumns(IO.BOX_WIDTH, "go west", "s", "Go west") +
+            IO.formatColumns(IO.BOX_WIDTH, "go east", "d", "Go east") +
+            IO.formatColumns(IO.BOX_WIDTH, "explore", "x", "Explore the area") +
+            IO.formatBanner(IO.BOX_WIDTH) +
+            IO.formatColumns(IO.BOX_WIDTH, "use <item>", "u", "Use an item") +
+            IO.formatColumns(IO.BOX_WIDTH, "equip <item>", "e", "Equip an item") +
+            IO.formatColumns(IO.BOX_WIDTH, "unequip <item>", "ue", "Unequip an item") +
+            IO.formatColumns(IO.BOX_WIDTH, "inspect <item>", "i", "Unequip an item") +
+            IO.formatBanner(IO.BOX_WIDTH) +
+            IO.formatColumns(IO.BOX_WIDTH, "view <options>", "v", "View summary of all") +
+            IO.formatColumns(IO.BOX_WIDTH, "  map", "", "Check the map") +
+            IO.formatColumns(IO.BOX_WIDTH, "  inv", "", "View inventory") +
+            IO.formatColumns(IO.BOX_WIDTH, "  equip", "", "See all equipped") +
+            IO.formatColumns(IO.BOX_WIDTH, "  current", "", "Inspect all equipped") +
+            IO.formatColumns(IO.BOX_WIDTH, "  position", "", "Check position") +
+            IO.formatColumns(IO.BOX_WIDTH, "  stats", "", "View stats") +
+            IO.formatColumns(IO.BOX_WIDTH, "  base", "", "View base stats") +
+            IO.formatColumns(IO.BOX_WIDTH, "  controls", "", "See this menu") +
+            IO.formatBanner(IO.BOX_WIDTH) +
+            IO.formatColumns(IO.BOX_WIDTH, "[0-9]", "", "Select menu options") +
+            IO.formatBanner(IO.BOX_WIDTH);
   }
 }

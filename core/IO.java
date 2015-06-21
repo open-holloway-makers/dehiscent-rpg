@@ -60,7 +60,7 @@ public class IO {
   }
 
   public static void debug(Object s) {
-    System.out.println(s);
+    System.err.println(s);
   }
 
   public static String repeatString(String str, int n) {
@@ -75,10 +75,50 @@ public class IO {
     return "+" + IO.repeatString("-", maxLineLength - 2) + "+\n";
   }
 
-  public static String formatOpposite(int maxLineLength, Object str1, Object str2) {
-    int len = (maxLineLength - 4)/ 2;
-    String formatString = String.format("| %%-%ds%%%ds |\n", len, len);
-    return String.format(formatString, str1, str2);
+  public static String formatColumns(int maxLineLength, Object... arguments) {
+    return formatColumns(maxLineLength, true, true, arguments);
+  }
+
+  public static String formatColumns(int maxLineLength, boolean alignLeft, boolean bordered, Object... arguments) {
+    int len, rem;
+    StringBuilder formatString = new StringBuilder();
+    if (bordered) {
+      maxLineLength -= 4;
+    }
+    len = maxLineLength / arguments.length;
+    rem = maxLineLength % arguments.length;
+    if (!alignLeft) {
+      if (bordered) {
+        formatString.append(String.format("| %%-%ds", len + rem));
+      } else {
+        formatString.append(String.format("%%-%ds", len + rem));
+      }
+    } else {
+      if (bordered) {
+        formatString.append(String.format("| ", len + rem));
+      }
+    }
+    for (int i = 0; i < arguments.length - 1; i++) {
+      if (alignLeft) {
+        formatString.append(String.format("%%-%ds", len));
+      } else {
+        formatString.append(String.format("%%%ds", len));
+      }
+    }
+    if (alignLeft) {
+      if (bordered) {
+        formatString.append(String.format("%%%ds |\n", len + rem));
+      } else {
+        formatString.append(String.format("%%%ds\n", len + rem));
+      }
+    } else {
+      if (bordered) {
+        formatString.append(String.format(" |\n", len + rem));
+      } else {
+        formatString.append(String.format("\n", len + rem));
+      }
+    }
+    return String.format(formatString.toString(), arguments);
   }
 
   public static String formatAsBox(String input, int maxLineLength, boolean bordered) {
@@ -98,10 +138,10 @@ public class IO {
     while (tok.hasMoreTokens()) {
       String word = tok.nextToken();
 
-      while(word.length() > maxLineLength){
+      while (word.length() > maxLineLength) {
         output.append(word.substring(0, maxLineLength - lineLen) +
                 IO.repeatString(" ", maxLineLength - lineLen) + newline);
-        word = word.substring(maxLineLength-lineLen);
+        word = word.substring(maxLineLength - lineLen);
         lineLen = 0;
       }
       if (lineLen + word.length() > maxLineLength) {

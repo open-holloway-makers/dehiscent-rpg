@@ -20,7 +20,7 @@ public class FromRuggedToRiches implements Cell {
   }
 
   @Override
-  public void explore(Player p) {
+  public void explore(Player player) {
     if (encounterValue == -1) {
       IO.println("\nIt's pretty empty around here now that the vagrant has gone.");
     } else {
@@ -29,7 +29,7 @@ public class FromRuggedToRiches implements Cell {
   }
 
   @Override
-  public void event(Player p) {
+  public void event(Player player) {
     if (encounterValue == 0) {
 
       IO.print(IO.formatAsBox(
@@ -42,7 +42,7 @@ public class FromRuggedToRiches implements Cell {
                       "from the cold, rough earth, could you?\""
               , IO.PARA_WIDTH, false));
 
-      Item[] possibleShoes = p.getAllKnownItems()
+      Item[] possibleShoes = player.getAllKnownItems()
               .parallelStream()
               .filter(i -> i.getSlotType() == SlotType.FEET)
               .sorted()
@@ -55,7 +55,7 @@ public class FromRuggedToRiches implements Cell {
               "\nWould you like to choose some boots to gift to the vagrant?\n",
               0, possibleShoes.length - 1, true);
       if (d > Double.NEGATIVE_INFINITY) {
-        p.lose(possibleShoes[(int) d]);
+        player.lose(possibleShoes[(int) d]);
 
         IO.print(IO.formatAsBox(
                 "\"Thank you so much, you're very kind! With these I can begin making " +
@@ -63,7 +63,7 @@ public class FromRuggedToRiches implements Cell {
                         "days earnings in return!\""
                 , IO.PARA_WIDTH, false));
 
-        p.addGold(2);
+        player.addGold(2);
         encounterValue++;
       } else {
 
@@ -73,7 +73,7 @@ public class FromRuggedToRiches implements Cell {
 
       }
     } else if (encounterValue >= 1) {
-      List<Item> possibleGifts = p.getAllKnownItems()
+      List<Item> possibleGifts = player.getAllKnownItems()
               .parallelStream()
               .filter(i -> i.getName().toLowerCase().contains("rugged"))
               .sorted((a, b) -> a.getName().compareToIgnoreCase(b.getName()))
@@ -111,7 +111,7 @@ public class FromRuggedToRiches implements Cell {
                 0, possibleGifts.size() - 1, true);
 
         if (d > Double.NEGATIVE_INFINITY) {
-          p.lose(possibleGifts.get(d.intValue()));
+          player.lose(possibleGifts.get(d.intValue()));
           possibleGifts.remove(d.intValue());
 
           IO.println();
@@ -138,26 +138,10 @@ public class FromRuggedToRiches implements Cell {
                         "bears no obvious markings which might identify its maker; perhaps they've been " +
                         "worn away or maybe the creator wasn't proud enough to put their name to it."
         );
-        p.obtain(batteredIronHelm);
+        player.obtain(batteredIronHelm);
         encounterValue = -1;
       }
     }
-
-    Consumable kedgeree = new Consumable("kedgeree", 5, 2,
-            (player) -> player.subHp(10));
-
-    Consumable onions = new Consumable("onions", 10, 2, "You feel revitalised!\n",
-            (player) -> player.addVit(1)
-    );
-
-    Consumable potion = new Consumable("potion", 200, 1, "You're almost fully recovered!\n", new Useable() {
-      @Override
-      public void use(Player player) {
-        player.addDex(1);
-        player.fullHeal();
-      }
-    });
-
   }
 
   @Override

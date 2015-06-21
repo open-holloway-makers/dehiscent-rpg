@@ -33,13 +33,13 @@ public class HomeCell implements Cell {
   }
 
   @Override 
-  public void explore(Player p) {
+  public void explore(Player player) {
     if (!isExplored) {
       IO.println("There's some warm soup on a table. It has an aroma that you've never smelt before...");
       String d = IO.getDecision("Have some of the soup? ");
       if (d.startsWith("y")) {
         IO.println("The soup tastes great and you feel your strength return.");
-        p.fullHeal();
+        player.fullHeal();
       } else if (d.startsWith("n")) {
         IO.println("Better leave it alone, no telling who made it or what's in it...");
       }
@@ -50,9 +50,9 @@ public class HomeCell implements Cell {
   }
 
   @Override 
-  public void event(Player p) {
+  public void event(Player player) {
     if (!isVisited) {
-      p.setHp((int) (p.getHp() * 0.6));
+      player.setHp((int) (player.getHp() * 0.6));
       IO.println("You feel weary, waking on a straw bed.");
       isVisited = true;
     } else {
