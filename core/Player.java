@@ -462,15 +462,16 @@ public abstract class Player {
             .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
     StringBuilder output = new StringBuilder();
-    output.append(IO.formatBanner(IO.BOX_WIDTH));
+    int maxWidth = (int)(IO.BOX_WIDTH * 1.4);
+    output.append(IO.formatBanner(maxWidth));
     for (Map.Entry<Item, Long> e : invCount.entrySet()) {
-      output.append(IO.formatColumns(IO.BOX_WIDTH, false, true,
+      output.append(IO.formatColumns(maxWidth, false, true,
               e.getKey().getName(),
               (e.getKey().isEquippable()) ? e.getKey().getSlotType().toString() : "",
               e.getKey().getValue() + "g",
               "x" + e.getValue()));
     }
-    output.append(IO.formatBanner(IO.BOX_WIDTH));
+    output.append(IO.formatBanner(maxWidth));
     return output.toString();
   }
 

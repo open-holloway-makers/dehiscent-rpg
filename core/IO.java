@@ -59,6 +59,10 @@ public class IO {
     System.out.format(format, arguments);
   }
 
+  public static void printAsBox(String s) {
+    IO.print(IO.formatAsBox(s, IO.PARA_WIDTH, false));
+  }
+
   public static void debug(Object s) {
     System.err.println(s);
   }

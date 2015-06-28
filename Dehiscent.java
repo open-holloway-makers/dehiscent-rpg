@@ -17,7 +17,6 @@ public class Dehiscent {
 
     Map overworld = createMap();
     Player p = new Wanderer();
-    p.addGold(50); // JUST FOR TESTING!!
 
     // Resume console output
     System.setOut(new PrintStream(realSystemOut));
@@ -115,8 +114,9 @@ public class Dehiscent {
   public static Map createMap() {
     Map overworld = new Map();
     overworld.setCell(0, 0, new HomeCell());
-    overworld.setCell(1, -1, new FromRuggedToRiches());
+    overworld.setCell(0, -1, new FromRuggedToRiches());
     overworld.setCell(1, 1, new LittleGrocerShop());
+    overworld.setCell(-1, 1, new ALittleSomethinSomethin());
 
     return overworld;
   }
