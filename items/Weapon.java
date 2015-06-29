@@ -26,7 +26,7 @@ public class Weapon extends Item {
   }
 
   public int getAttackRating(Player player) {
-    return (int) java.lang.Math.ceil((
+    return (int) java.lang.Math.round((
             getCompositeAttackRating(player)) *
             ((new Random().nextInt(10) + 95) / 100.0));
   }

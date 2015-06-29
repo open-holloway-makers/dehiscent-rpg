@@ -12,28 +12,16 @@ import java.util.stream.Collectors;
 public class CombatResolver {
 
   // Gosh what a big method
-  public static void resolveCombat(Player player, Enemy enemy) {
+  public static boolean resolveCombat(Player player, Enemy enemy) {
     // Get possible hands
-    List<String> hands = player.getEquipSlots().keySet()
-            .parallelStream()
-            .filter(k -> k.toLowerCase().contains("hand"))
-            .collect(Collectors.toList());
+    List<String> hands = getAvailableHands(player);
 
     while (player.getHp() > 0 && enemy.getHp() > 0) {
-      IO.println("==================================================");
-      IO.printf("Player %d/%d\t\t\t\t%d/%d %s\n",
-              player.getHp(), player.getMaxHp(), enemy.getHp(),
-              enemy.getMaxHp(), enemy.getName());
-      IO.println("==================================================");
+      printCombatBanner(player, enemy);
+
       // Player turn
-      for (int i = 0; i < hands.size(); i++) {
-        IO.print(i + ": " + hands.get(i));
-        if (player.getEquipSlots().get(hands.get(i)).isFree()) {
-          IO.print("\t\t(empty)\n");
-        } else {
-          IO.print("\t\t" + player.getEquipSlots().get(hands.get(i)).getItem().getName() + "\n");
-        }
-      }
+      printHandsEquip(player, hands);
+
       Weapon weaponToAttackWith = null;
       while (weaponToAttackWith == null) {
         String decision = IO.getDecision("Which hand do you attack with? ");
@@ -66,15 +54,46 @@ public class CombatResolver {
       IO.printf("The %s attacked you for %d damage!\n\n", enemy.getName(), enemyDamage);
       player.subHp(enemyDamage);
     }
+
+    printCombatBanner(player, enemy);
+    boolean outcome = false;
     if (player.getHp() <= 0) {
       IO.println("You died...\n");
       player.die();
     } else {
       IO.println("You are victorious!");
-      IO.printf("Obtained %d gold.\n", enemy.getGoldReward());
-      IO.printf("Obtained %d xp.\n", enemy.getXpReward());
       player.addGold(enemy.getGoldReward());
       player.addXp(enemy.getXpReward());
+      outcome = true;
     }
+    return outcome;
+  }
+
+  private static void printCombatBanner(Player player, Enemy enemy) {
+    IO.print(IO.formatBanner(IO.BOX_WIDTH));
+    IO.print(IO.formatColumns(IO.BOX_WIDTH, false, true,
+            String.format("Player %d/%d", player.getHp(), player.getMaxHp()),
+            String.format("%d/%d %s", enemy.getHp(),
+                    enemy.getMaxHp(), enemy.getName())));
+    IO.print(IO.formatBanner(IO.BOX_WIDTH));
+  }
+
+  public static List<String> getAvailableHands(Player player) {
+    return player.getEquipSlots().keySet()
+            .parallelStream()
+            .filter(k -> k.toLowerCase().contains("hand"))
+            .collect(Collectors.toList());
+  }
+
+  public static void printHandsEquip(Player player, List<String> hands) {
+    for (int i = 0; i < hands.size(); i++) {
+      String hand = hands.get(i);
+      String holding = "(empty)";
+      if (!player.getEquipSlots().get(hands.get(i)).isFree()) {
+        holding = player.getEquipSlots().get(hands.get(i)).getItem().getName();
+      }
+      IO.print(IO.formatColumns(IO.BOX_WIDTH, i + ": " + hand, holding));
+    }
+    IO.println(IO.formatBanner(IO.BOX_WIDTH));
   }
 }

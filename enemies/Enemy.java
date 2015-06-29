@@ -41,7 +41,7 @@ public class Enemy {
 
   public int getAttackRating() {
     Random rng = new Random();
-    return (int)java.lang.Math.ceil(attackRating * ((rng.nextInt(20) + 90) / 100.0));
+    return (int)java.lang.Math.round(attackRating * ((rng.nextInt(20) + 90) / 100.0));
   }
 
   public void setAttackRating(int attackRating) {

@@ -1,6 +1,7 @@
 import classes.Wanderer;
 import core.IO;
 import core.Player;
+import jdk.nashorn.internal.objects.NativeUint8ClampedArray;
 import map.Map;
 import map.cells.*;
 
@@ -117,6 +118,7 @@ public class Dehiscent {
     overworld.setCell(0, -1, new FromRuggedToRiches());
     overworld.setCell(1, 1, new LittleGrocerShop());
     overworld.setCell(-1, 1, new ALittleSomethinSomethin());
+    overworld.setCell(1, -1, new NuisancePig());
 
     return overworld;
   }

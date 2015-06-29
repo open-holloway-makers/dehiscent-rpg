@@ -37,7 +37,7 @@ public class Wanderer extends Player {
 
     leatherTabbard.setLoreText("A tough leather overcoat, dirty and battered by the elements. " +
             "It features some fine embroidery along its seams but it's worn out and barely noticeable " +
-            "anymore, as is the lord which once wore it.");
+            "anymore, much like the lord who once wore it.");
     ruggedGreaves.setLoreText("Made of an itchy wool, these are probably no use to anyone.");
     ruggedGloves.setLoreText("Thick textile gloves, better for gardening than anything else.");
     ruggedBoots.setLoreText("Made of a mix of hides taken from animals known to survive in " +

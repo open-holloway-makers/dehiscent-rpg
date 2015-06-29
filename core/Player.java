@@ -355,8 +355,18 @@ public abstract class Player {
     if (possibleEquipSlots.size() == 1) {
       slotToEquipTo = equipSlots.get(possibleEquipSlots.get(0));
     } else if (possibleEquipSlots.size() > 1) {
+      IO.print(IO.formatBanner(IO.BOX_WIDTH));
       IntStream.range(0, possibleEquipSlots.size())
-              .forEachOrdered(i -> IO.println(i + ": " + possibleEquipSlots.get(i)));
+              .forEachOrdered(i ->
+                      IO.print(IO.formatColumns(IO.BOX_WIDTH,
+                              i + ": " + possibleEquipSlots.get(i),
+                              (getEquipSlots().get(possibleEquipSlots.get(i)).isFree()) ?
+                                      "(empty)" :
+                                      getEquipSlots()
+                                              .get(possibleEquipSlots.get(i))
+                                              .getItem()
+                                              .getName())));
+      IO.print(IO.formatBanner(IO.BOX_WIDTH));
 
       double d = IO.getNumberWithinRange(
               "Which slot would you like to equip to? ",
@@ -432,12 +442,10 @@ public abstract class Player {
             .distinct()
             .toArray(String[]::new);
 
-    String formatString = "%-16s%-24s%-8s%8s\n";
     String output;
-
-    String title = "------------------------------------------------------------\n";
-    title += String.format(formatString, "Equip Slot", "Item Name", "Dmg", "Modifiers");
-    title += "------------------------------------------------------------";
+    int maxWidth = (int)(IO.BOX_WIDTH * 1.4);
+    String title = IO.formatBanner(maxWidth);
+    title += IO.formatColumns(maxWidth, true, true, "Equip Slot", "Item Name", "Dmg", "Modifiers");
     String outputHands = "";
     String outputBody = "";
     String outputAccessories = "";
@@ -448,11 +456,13 @@ public abstract class Player {
       String modStr = "";
       if (e.getItem() != null) {
         if (e.getItem() instanceof Weapon) {
-          dmgStr = Integer.toString(((Weapon) e.getItem()).getAttackRating(this));
+          dmgStr = Integer.toString((int)
+                  (java.lang.Math.round(
+                          ((Weapon) e.getItem()).getCompositeAttackRating(this))));
         }
         modStr = e.getItem().modifiersToString();
       }
-      output = String.format(formatString, s, itemStr, dmgStr, modStr);
+      output = IO.formatColumns(maxWidth, true, true, s, itemStr, dmgStr, modStr);
 
       if (s.contains("Hand")) {
         outputHands += output;
@@ -462,7 +472,7 @@ public abstract class Player {
         outputBody += output;
       }
     }
-    return String.join("\n", "\n", title, outputHands, outputBody, outputAccessories);
+    return String.join(IO.formatBanner(maxWidth), title, outputHands, outputBody, outputAccessories, "\n");
   }
 
   public String inventoryToString() {
@@ -472,7 +482,7 @@ public abstract class Player {
             .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
     StringBuilder output = new StringBuilder();
-    int maxWidth = (int)(IO.BOX_WIDTH * 1.4);
+    int maxWidth = (int) (IO.BOX_WIDTH * 1.4);
     output.append(IO.formatBanner(maxWidth));
     for (Map.Entry<Item, Long> e : invCount.entrySet()) {
       output.append(IO.formatColumns(maxWidth, false, true,
