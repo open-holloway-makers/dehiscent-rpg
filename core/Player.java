@@ -60,11 +60,11 @@ public abstract class Player {
   }
 
   public void addHp(int x) {
-    hp = java.lang.Math.min(hp + x, getMaxHp());
+    addHp(x, false);
   }
 
   public void subHp(int x) {
-    hp -= x;
+    subHp(x, false);
   }
 
   public void addGold(int x) {
@@ -77,6 +77,16 @@ public abstract class Player {
 
   public void addXp(int x) {
     addXp(x, false);
+  }
+
+  public void addHp(int x, boolean suppress) {
+    if (!suppress) IO.printf("You gained %d health.\n", x);
+    hp = java.lang.Math.min(hp + x, getMaxHp());
+  }
+
+  public void subHp(int x, boolean suppress) {
+    if (!suppress) IO.printf("You lost %d health.\n", x);
+    hp -= x;
   }
 
   public void addGold(int x, boolean suppress) {

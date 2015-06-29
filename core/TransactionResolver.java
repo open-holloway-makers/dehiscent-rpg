@@ -58,7 +58,7 @@ public class TransactionResolver {
       if (d.startsWith("y")) {
         if (p.getGold() < itemToBuy.get().getSalePrice()) {
           IO.println("Sorry, you don't have enough gold.");
-        } else if (itemToBuy != null) {
+        } else if (itemToBuy.get() != null) {
           p.obtain(itemToBuy.get().getItemForSale());
           m.lose(itemToBuy.get());
           p.subGold(itemToBuy.get().getSalePrice());
@@ -74,7 +74,7 @@ public class TransactionResolver {
       int adjustedPrice = m.getAdjustedBuyingPrice(itemToSell.get());
       String d = IO.getDecision(confirmationMessage);
       if (d.startsWith("y")) {
-        if (itemToSell != null && m.getGold() >= itemToSell.get().getValue()) {
+        if (itemToSell.get() != null && m.getGold() >= itemToSell.get().getValue()) {
           p.lose(itemToSell.get());
           m.obtain(itemToSell.get(), 1);
           p.addGold(adjustedPrice);
