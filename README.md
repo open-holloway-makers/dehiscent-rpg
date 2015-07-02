@@ -15,8 +15,6 @@ Certain features are currently in progress and should be finished soon, so don't
   * Saving and loading
   * Updates to the class structure of items to allow better composition
 
-<div>
-<h3>Contribute</h3>
 1. Fork repo on GitHub
 2. Clone your fork to create a working copy
 ```sh
