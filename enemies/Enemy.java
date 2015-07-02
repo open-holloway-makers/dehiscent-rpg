@@ -2,6 +2,10 @@ package enemies;
 
 import java.util.Random;
 
+/**
+ * The base class for an enemy. This can be reused for
+ * most enemies just by creating them with different parameters.
+ */
 public class Enemy {
   private String name;
   private int hp;

@@ -4,6 +4,10 @@ import core.Player;
 import core.Stat;
 import items.*;
 
+/**
+ * An example class which further customises the Player
+ * with varying starting stats and equipment.
+ */
 public class Wanderer extends Player {
 
   public Wanderer() {

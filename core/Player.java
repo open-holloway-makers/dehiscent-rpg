@@ -9,6 +9,13 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+/**
+ * One of the core classes in the game, this is an
+ * abstract representation of the player character and
+ * contains all the generic methods used to update,
+ * maintain and observe the attributes of the player
+ * character as they progress through the game.
+ */
 public abstract class Player {
 
   protected int hp, xp, gold;
@@ -23,6 +30,13 @@ public abstract class Player {
   protected List<Item> inventory;
   protected List<Item> hiddenInventory;
 
+  /**
+   * A constructor for the player which initialises
+   * their position and knowledge of the world, as
+   * well as their inventories. Notably it also calls
+   * other helper initialisation methods which can all
+   * be overridden by classes that extend Player.
+   */
   public Player() {
     position = new WorldPoint(0, 0);
     visitedPoints = new ArrayList<>();
@@ -38,12 +52,34 @@ public abstract class Player {
     initEquipped();
   }
 
+  /**
+   * Sets the starting stats of the player.
+   * Must be overridden by a subclass.
+   */
   public abstract void initBaseStats();
 
+  /**
+   * Sets the starting vitals of the player.
+   * Must be overridden by a subclass.
+   */
   public abstract void initVitals();
 
+  /**
+   * Sets the starting equipment of the player.
+   * Must be overridden by a subclass.
+   */
   public abstract void initEquipped();
 
+  /**
+   * Initialises the possible equip slots which the
+   * player can equip items too. Any modifications or
+   * interactions with this system should bear in mind
+   * it's intention to be flexible and overridden by
+   * subclasses. Any attempt to get the 'head' slot should
+   * take into account that it is possible by design to
+   * have more than one head slot, more than four accessory
+   * slots and more than two hands (etc). We will see!
+   */
   public void initEquipSlots() {
     equipSlots = new HashMap<>();
     equipSlots.put("Left Hand", new EquipSlot(SlotType.HAND, null));
@@ -148,12 +184,18 @@ public abstract class Player {
     physicalDefence += x;
   }
 
+  /**
+   * Sets the players new position and updates their
+   * world knowledge.
+   * @param x the x coordinate to move to.
+   * @param y the y coordinate to move to.
+   */
   public void setPosition(int x, int y) {
     position = new WorldPoint(x, y);
     visitedPoints.add(position);
   }
 
-  // This should probably be changed in the future!
+  // TODO This should probably be changed in the future!
   public int getMaxHp() {
     return (int) (100 * (this.vitality / 10.0));
   }
@@ -226,34 +268,56 @@ public abstract class Player {
     return hiddenInventory;
   }
 
-  public void obtain(Item i) {
-    obtain(i, false);
+  /**
+   * Adds an item to the players common inventory.
+   *
+   * @param item the item to be obtained.
+   */
+  public void obtain(Item item) {
+    obtain(item, false);
   }
 
-  public void obtain(Item i, boolean suppress) {
-    if (!suppress) IO.println(i.getName() + " added to inventory.");
-    inventory.add(i);
+  /**
+   * Adds an item to the players common inventory.
+   *
+   * @param item the item to be obtained.
+   * @param suppress whether to suppress the info message.
+   */
+  public void obtain(Item item, boolean suppress) {
+    if (!suppress) IO.println(item.getName() + " added to inventory.");
+    inventory.add(item);
   }
 
-  public void lose(Item i) {
-    lose(i, false);
+  /**
+   * Removes an item from the players common inventory.
+   *
+   * @param item the item to be obtained.
+   */
+  public void lose(Item item) {
+    lose(item, false);
   }
 
-  public void lose(Item i, boolean suppress) {
-    if (findInventoryItem(i.getName()).isPresent() || findEquippedItem(i.getName()).isPresent()) {
-      if (findEquippedItem(i.getName()).isPresent())
-        attemptToUnequip(i.getName());
-      inventory.remove(i);
-      if (!suppress) IO.println(i.getName() + " removed from inventory.");
+  /**
+   * Removes an item from the players common inventory.
+   *
+   * @param item the item to be obtained.
+   * @param suppress whether to suppress the info message.
+   */
+  public void lose(Item item, boolean suppress) {
+    if (findInventoryItem(item.getName()).isPresent() || findEquippedItem(item.getName()).isPresent()) {
+      if (findEquippedItem(item.getName()).isPresent())
+        attemptToUnequip(item.getName());
+      inventory.remove(item);
+      if (!suppress) IO.println(item.getName() + " removed from inventory.");
     }
   }
 
-  public void obtainHidden(Item i) {
-    hiddenInventory.add(i);
+  public void obtainHidden(Item item) {
+    hiddenInventory.add(item);
   }
 
-  public void loseHidden(Item i) {
-    hiddenInventory.remove(i);
+  public void loseHidden(Item item) {
+    hiddenInventory.remove(item);
   }
 
   public void goNorth() {

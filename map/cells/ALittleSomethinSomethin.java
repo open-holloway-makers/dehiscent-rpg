@@ -19,13 +19,13 @@ public class ALittleSomethinSomethin implements Cell {
   public void explore(Player player) {
 
     if (encounterValue == 0) {
-      IO.printAsBox(
+      IO.printAsPara(
               "You look behind a bush to see the corner of an old iron box poking " +
                       "out of the dirt."
       );
 
       if (IO.getAffirmative("Try and dig it up? ")) {
-        IO.printAsBox(
+        IO.printAsPara(
                 "You dig it up and wipe some of the mud from the front. " +
                         "The box is plain but very heavy, perhaps something valuable " +
                         " is inside. It's locked but the latch is old and rusty."
@@ -35,7 +35,7 @@ public class ALittleSomethinSomethin implements Cell {
     }
     if (encounterValue == 1) {
       if (IO.getAffirmative("Try and pry open the box? ")) {
-        IO.printAsBox(
+        IO.printAsPara(
                 "The latch snaps open suddenly and a sharp edge cuts your wrist deeply. " +
                         "As you drop it to the floor you see a note laying on top of the box. " +
                         "\"Here lies Bowboha, a loyal friend and companion. R.I.P.\""
@@ -46,7 +46,7 @@ public class ALittleSomethinSomethin implements Cell {
     }
 
     if (encounterValue == 2) {
-      IO.printAsBox(
+      IO.printAsPara(
               "Still lodged in the box is a large rock wrapped neatly in a tattered " +
                       "muslin cloth."
       );
@@ -60,7 +60,7 @@ public class ALittleSomethinSomethin implements Cell {
         encounterValue++;
       }
     } else {
-      IO.printAsBox(
+      IO.printAsPara(
               "You step over the hole where the rock was once buried."
       );
     }

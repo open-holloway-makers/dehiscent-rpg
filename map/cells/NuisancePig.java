@@ -23,7 +23,7 @@ public class NuisancePig implements Cell {
   @Override
   public void event(Player player) {
     if (encounterValue < 1) {
-      IO.printAsBox(
+      IO.printAsPara(
               "A wild pig appeared! With a grunt and a snarl it lowers its head to " +
                       "charge at you."
       );

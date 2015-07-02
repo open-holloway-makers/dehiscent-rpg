@@ -9,8 +9,25 @@ import items.Weapon;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * A helper class to resolve combat events.
+ */
 public class CombatResolver {
 
+  /**
+   * A static helper method which takes a single player and
+   * a single enemy and pitches them against one another. The
+   * main loop asks for the player's choice of equipped weapon
+   * and resolves the subsequent damage values appropriately.
+   *
+   * Once the health of either the player or enemy reaches 0,
+   * the spoils of the battle are automatically divied out based
+   * on the properties of the enemy.
+   *
+   * @param player the player fighting in combat.
+   * @param enemy the enemy fighting in combat.
+   * @return true if the player is victorious, false otherwise.
+   */
   // Gosh what a big method
   public static boolean resolveCombat(Player player, Enemy enemy) {
     // Get possible hands
@@ -69,6 +86,13 @@ public class CombatResolver {
     return outcome;
   }
 
+  /**
+   * Prints out a banner displaying the player and enemy's
+   * name and current and maximum hit-points.
+   *
+   * @param player the player to display info for.
+   * @param enemy the enemy to display info for.
+   */
   private static void printCombatBanner(Player player, Enemy enemy) {
     IO.print(IO.formatBanner(IO.BOX_WIDTH));
     IO.print(IO.formatColumns(IO.BOX_WIDTH, false, true,
@@ -78,14 +102,27 @@ public class CombatResolver {
     IO.print(IO.formatBanner(IO.BOX_WIDTH));
   }
 
-  public static List<String> getAvailableHands(Player player) {
+  /**
+   * Returns a list of available hands the player can strike with.
+   *
+   * @param player the player to get the hands for.
+   * @return a list of possible weapons to attack with.
+   */
+  private static List<String> getAvailableHands(Player player) {
     return player.getEquipSlots().keySet()
             .parallelStream()
             .filter(k -> k.toLowerCase().contains("hand"))
             .collect(Collectors.toList());
   }
 
-  public static void printHandsEquip(Player player, List<String> hands) {
+  /**
+   * A helper function to print out a list of available hands
+   * the player can strike with.
+   *
+   * @param player the player to print the hands for.
+   * @param hands the hand slots of the player which are to be printed.
+   */
+  private static void printHandsEquip(Player player, List<String> hands) {
     for (int i = 0; i < hands.size(); i++) {
       String hand = hands.get(i);
       String holding = "(empty)";
