@@ -7,8 +7,22 @@ import map.cells.*;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
+/**
+ * This is the main class for the project where all
+ * core objects are initialised (player, map, cells).
+ */
 public class Dehiscent {
 
+  /**
+   * Entry point for the game. This contains the main
+   * loop which consists of:
+   *
+   *    1. Get player input
+   *    2. Execute event based on input
+   *    3. If necessary, update player position
+   *
+   * @param args command-line arguments (not used)
+   */
   public static void main(String[] args) {
 
     // Suppress console output during setup
@@ -17,7 +31,6 @@ public class Dehiscent {
 
     Map overworld = createMap();
     Player p = new Wanderer();
-    p.addGold(50); // JUST FOR TESTING!!
 
     // Resume console output
     System.setOut(new PrintStream(realSystemOut));
@@ -30,7 +43,6 @@ public class Dehiscent {
 
       Cell previousCell = currentCell;
       while (currentCell == previousCell) {
-        // TODO decision making code should be extracted and made reusable
         String decision = IO.getDecision("\nWhat will you do?\n");
         switch (decision) {
           case "w":
@@ -112,15 +124,33 @@ public class Dehiscent {
     }
   }
 
+  /**
+   * This is where the map is initialised and where new cells
+   * can be added to it.
+   *
+   * @see map.Map
+   * @see map.Quadrant
+   * @see map.cells.Cell
+   *
+   * @return a new map containing blank cells and all currently
+   * created cells.
+   */
   public static Map createMap() {
     Map overworld = new Map();
     overworld.setCell(0, 0, new HomeCell());
-    overworld.setCell(1, -1, new FromRuggedToRiches());
+    overworld.setCell(0, -1, new FromRuggedToRiches());
     overworld.setCell(1, 1, new LittleGrocerShop());
-
+    overworld.setCell(-1, 1, new ALittleSomethinSomethin());
+    overworld.setCell(1, -1, new NuisancePig());
     return overworld;
   }
 
+  /**
+   * Prints out all controls currently assigned which can
+   * be used during the main loop.
+   *
+   * @return a string containing all the controls
+   */
   public static String controlsToString() {
     return IO.formatBanner(IO.BOX_WIDTH) +
             IO.formatColumns(IO.BOX_WIDTH, "COMMAND", "HOTKEY", "EFFECT") +

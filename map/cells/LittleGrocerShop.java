@@ -38,6 +38,10 @@ public class LittleGrocerShop implements Cell {
       p.addXp(1);
     });
 
+    carrots.setLoreText("The ultimate answer to the question, \"What's up, apothecary?\"");
+    magicTurnip.setLoreText("Something about this vegetable seems oddly entrancing.");
+    beef.setLoreText("The most important part of a good, hearty meal.");
+
     polliver.obtain(carrots, Integer.MAX_VALUE);
     polliver.obtain(magicTurnip, 1);
     polliver.obtain(beef, 1);

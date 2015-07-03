@@ -8,7 +8,6 @@ import items.*;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public class FromRuggedToRiches implements Cell {
 
@@ -32,15 +31,15 @@ public class FromRuggedToRiches implements Cell {
   public void event(Player player) {
     if (encounterValue == 0) {
 
-      IO.print(IO.formatAsBox(
+      IO.printAsPara(
               "A sorry looking vagrant approaches you. His rags are filthy and his " +
                       "feet are scabbed and bloody."
-              , IO.PARA_WIDTH, false));
+      );
 
-      IO.print(IO.formatAsBox(
+      IO.printAsPara(
               "\"You couldn't spare some shoes so that I can protect my tired feet " +
                       "from the cold, rough earth, could you?\""
-              , IO.PARA_WIDTH, false));
+      );
 
       Item[] possibleShoes = player.getAllKnownItems()
               .parallelStream()
@@ -57,19 +56,19 @@ public class FromRuggedToRiches implements Cell {
       if (d > Double.NEGATIVE_INFINITY) {
         player.lose(possibleShoes[(int) d]);
 
-        IO.print(IO.formatAsBox(
+        IO.printAsPara(
                 "\"Thank you so much, you're very kind! With these I can begin making " +
                         "my way to a new home, and start a new life! Please, take my " +
                         "days earnings in return!\""
-                , IO.PARA_WIDTH, false));
+        );
 
         player.addGold(2);
         encounterValue++;
       } else {
 
-        IO.print(IO.formatAsBox(
+        IO.printAsPara(
                 "You apologise to the poor man and continue on your way."
-                , IO.PARA_WIDTH, false));
+        );
 
       }
     } else if (encounterValue >= 1) {
@@ -83,25 +82,25 @@ public class FromRuggedToRiches implements Cell {
 
         if (encounterValue == 1) {
 
-          IO.print(IO.formatAsBox(
+          IO.printAsPara(
                   "By the path is a vagrant. He's looking comfortable in his new shoes. " +
                           "\"These shows are a perfect fit! But I'm worried they won't be " +
                           "enough for me to travel too far, these rags hardly keep me warm!\""
-                  , IO.PARA_WIDTH, false));
+          );
 
         } else {
 
-          IO.print(IO.formatAsBox(
+          IO.printAsPara(
                   "You see the vagrant again, wearing some of your clothes. \"Thank you so " +
                           "much! I'm almost ready to leave, but the nights are still hard.\""
-                  , IO.PARA_WIDTH, false));
+          );
 
         }
 
-        IO.print(IO.formatAsBox(
+        IO.printAsPara(
                 "\"I have nothing left to offer you in return, but please, you wouldn't happen " +
                         "to have something more rugged that I could wear, do you?\""
-                , IO.PARA_WIDTH, false));
+        );
 
         IntStream.range(0, possibleGifts.size())
                 .forEachOrdered(i -> IO.println(i + ": " + possibleGifts.get(i).getName()));
@@ -124,12 +123,12 @@ public class FromRuggedToRiches implements Cell {
       }
       if (possibleGifts.size() == 0) {
 
-        IO.print(IO.formatAsBox(
+        IO.printAsPara(
                 "\"This is perfect! I think I'm ready to make a new life elsewhere now! " +
                         "Thank you for all your help! Please, another traveller gave me " +
                         "this but it's of no use to a simple man like me. You'll make " +
                         "better use of it I think!\""
-                , IO.PARA_WIDTH, false));
+        );
 
         Item batteredIronHelm = new Item("Battered Iron Helm", 20, SlotType.HEAD, new Modifier(Stat.PHYS_DEF, 15));
         // You can't have lore text without the phrase "It's definitely seen better days.."

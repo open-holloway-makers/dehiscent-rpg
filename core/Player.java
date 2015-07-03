@@ -9,6 +9,13 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+/**
+ * One of the core classes in the game, this is an
+ * abstract representation of the player character and
+ * contains all the generic methods used to update,
+ * maintain and observe the attributes of the player
+ * character as they progress through the game.
+ */
 public abstract class Player {
 
   protected int hp, xp, gold;
@@ -23,6 +30,13 @@ public abstract class Player {
   protected List<Item> inventory;
   protected List<Item> hiddenInventory;
 
+  /**
+   * A constructor for the player which initialises
+   * their position and knowledge of the world, as
+   * well as their inventories. Notably it also calls
+   * other helper initialisation methods which can all
+   * be overridden by classes that extend Player.
+   */
   public Player() {
     position = new WorldPoint(0, 0);
     visitedPoints = new ArrayList<>();
@@ -38,12 +52,34 @@ public abstract class Player {
     initEquipped();
   }
 
+  /**
+   * Sets the starting stats of the player.
+   * Must be overridden by a subclass.
+   */
   public abstract void initBaseStats();
 
+  /**
+   * Sets the starting vitals of the player.
+   * Must be overridden by a subclass.
+   */
   public abstract void initVitals();
 
+  /**
+   * Sets the starting equipment of the player.
+   * Must be overridden by a subclass.
+   */
   public abstract void initEquipped();
 
+  /**
+   * Initialises the possible equip slots which the
+   * player can equip items too. Any modifications or
+   * interactions with this system should bear in mind
+   * it's intention to be flexible and overridden by
+   * subclasses. Any attempt to get the 'head' slot should
+   * take into account that it is possible by design to
+   * have more than one head slot, more than four accessory
+   * slots and more than two hands (etc). We will see!
+   */
   public void initEquipSlots() {
     equipSlots = new HashMap<>();
     equipSlots.put("Left Hand", new EquipSlot(SlotType.HAND, null));
@@ -60,11 +96,11 @@ public abstract class Player {
   }
 
   public void addHp(int x) {
-    hp = java.lang.Math.min(hp + x, getMaxHp());
+    addHp(x, false);
   }
 
   public void subHp(int x) {
-    hp -= x;
+    subHp(x, false);
   }
 
   public void addGold(int x) {
@@ -77,6 +113,16 @@ public abstract class Player {
 
   public void addXp(int x) {
     addXp(x, false);
+  }
+
+  public void addHp(int x, boolean suppress) {
+    if (!suppress) IO.printf("You gained %d health.\n", x);
+    hp = java.lang.Math.min(hp + x, getMaxHp());
+  }
+
+  public void subHp(int x, boolean suppress) {
+    if (!suppress) IO.printf("You lost %d health.\n", x);
+    hp -= x;
   }
 
   public void addGold(int x, boolean suppress) {
@@ -138,12 +184,18 @@ public abstract class Player {
     physicalDefence += x;
   }
 
+  /**
+   * Sets the players new position and updates their
+   * world knowledge.
+   * @param x the x coordinate to move to.
+   * @param y the y coordinate to move to.
+   */
   public void setPosition(int x, int y) {
     position = new WorldPoint(x, y);
     visitedPoints.add(position);
   }
 
-  // This should probably be changed in the future!
+  // TODO This should probably be changed in the future!
   public int getMaxHp() {
     return (int) (100 * (this.vitality / 10.0));
   }
@@ -216,34 +268,56 @@ public abstract class Player {
     return hiddenInventory;
   }
 
-  public void obtain(Item i) {
-    obtain(i, false);
+  /**
+   * Adds an item to the players common inventory.
+   *
+   * @param item the item to be obtained.
+   */
+  public void obtain(Item item) {
+    obtain(item, false);
   }
 
-  public void obtain(Item i, boolean suppress) {
-    if (!suppress) IO.println(i.getName() + " added to inventory.");
-    inventory.add(i);
+  /**
+   * Adds an item to the players common inventory.
+   *
+   * @param item the item to be obtained.
+   * @param suppress whether to suppress the info message.
+   */
+  public void obtain(Item item, boolean suppress) {
+    if (!suppress) IO.println(item.getName() + " added to inventory.");
+    inventory.add(item);
   }
 
-  public void lose(Item i) {
-    lose(i, false);
+  /**
+   * Removes an item from the players common inventory.
+   *
+   * @param item the item to be obtained.
+   */
+  public void lose(Item item) {
+    lose(item, false);
   }
 
-  public void lose(Item i, boolean suppress) {
-    if (findInventoryItem(i.getName()).isPresent() || findEquippedItem(i.getName()).isPresent()) {
-      if (findEquippedItem(i.getName()).isPresent())
-        attemptToUnequip(i.getName());
-      inventory.remove(i);
-      if (!suppress) IO.println(i.getName() + " removed from inventory.");
+  /**
+   * Removes an item from the players common inventory.
+   *
+   * @param item the item to be obtained.
+   * @param suppress whether to suppress the info message.
+   */
+  public void lose(Item item, boolean suppress) {
+    if (findInventoryItem(item.getName()).isPresent() || findEquippedItem(item.getName()).isPresent()) {
+      if (findEquippedItem(item.getName()).isPresent())
+        attemptToUnequip(item.getName());
+      inventory.remove(item);
+      if (!suppress) IO.println(item.getName() + " removed from inventory.");
     }
   }
 
-  public void obtainHidden(Item i) {
-    hiddenInventory.add(i);
+  public void obtainHidden(Item item) {
+    hiddenInventory.add(item);
   }
 
-  public void loseHidden(Item i) {
-    hiddenInventory.remove(i);
+  public void loseHidden(Item item) {
+    hiddenInventory.remove(item);
   }
 
   public void goNorth() {
@@ -345,8 +419,18 @@ public abstract class Player {
     if (possibleEquipSlots.size() == 1) {
       slotToEquipTo = equipSlots.get(possibleEquipSlots.get(0));
     } else if (possibleEquipSlots.size() > 1) {
+      IO.print(IO.formatBanner(IO.BOX_WIDTH));
       IntStream.range(0, possibleEquipSlots.size())
-              .forEachOrdered(i -> IO.println(i + ": " + possibleEquipSlots.get(i)));
+              .forEachOrdered(i ->
+                      IO.print(IO.formatColumns(IO.BOX_WIDTH,
+                              i + ": " + possibleEquipSlots.get(i),
+                              (getEquipSlots().get(possibleEquipSlots.get(i)).isFree()) ?
+                                      "(empty)" :
+                                      getEquipSlots()
+                                              .get(possibleEquipSlots.get(i))
+                                              .getItem()
+                                              .getName())));
+      IO.print(IO.formatBanner(IO.BOX_WIDTH));
 
       double d = IO.getNumberWithinRange(
               "Which slot would you like to equip to? ",
@@ -422,12 +506,10 @@ public abstract class Player {
             .distinct()
             .toArray(String[]::new);
 
-    String formatString = "%-16s%-24s%-8s%8s\n";
     String output;
-
-    String title = "------------------------------------------------------------\n";
-    title += String.format(formatString, "Equip Slot", "Item Name", "Dmg", "Modifiers");
-    title += "------------------------------------------------------------";
+    int maxWidth = (int)(IO.BOX_WIDTH * 1.4);
+    String title = IO.formatBanner(maxWidth);
+    title += IO.formatColumns(maxWidth, true, true, "Equip Slot", "Item Name", "Dmg", "Modifiers");
     String outputHands = "";
     String outputBody = "";
     String outputAccessories = "";
@@ -438,11 +520,13 @@ public abstract class Player {
       String modStr = "";
       if (e.getItem() != null) {
         if (e.getItem() instanceof Weapon) {
-          dmgStr = Integer.toString(((Weapon) e.getItem()).getAttackRating(this));
+          dmgStr = Integer.toString((int)
+                  (java.lang.Math.round(
+                          ((Weapon) e.getItem()).getCompositeAttackRating(this))));
         }
         modStr = e.getItem().modifiersToString();
       }
-      output = String.format(formatString, s, itemStr, dmgStr, modStr);
+      output = IO.formatColumns(maxWidth, true, true, s, itemStr, dmgStr, modStr);
 
       if (s.contains("Hand")) {
         outputHands += output;
@@ -452,7 +536,7 @@ public abstract class Player {
         outputBody += output;
       }
     }
-    return String.join("\n", "\n", title, outputHands, outputBody, outputAccessories);
+    return String.join(IO.formatBanner(maxWidth), title, outputHands, outputBody, outputAccessories, "\n");
   }
 
   public String inventoryToString() {
@@ -462,15 +546,16 @@ public abstract class Player {
             .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
     StringBuilder output = new StringBuilder();
-    output.append(IO.formatBanner(IO.BOX_WIDTH));
+    int maxWidth = (int) (IO.BOX_WIDTH * 1.4);
+    output.append(IO.formatBanner(maxWidth));
     for (Map.Entry<Item, Long> e : invCount.entrySet()) {
-      output.append(IO.formatColumns(IO.BOX_WIDTH, false, true,
+      output.append(IO.formatColumns(maxWidth, false, true,
               e.getKey().getName(),
               (e.getKey().isEquippable()) ? e.getKey().getSlotType().toString() : "",
               e.getKey().getValue() + "g",
               "x" + e.getValue()));
     }
-    output.append(IO.formatBanner(IO.BOX_WIDTH));
+    output.append(IO.formatBanner(maxWidth));
     return output.toString();
   }
 

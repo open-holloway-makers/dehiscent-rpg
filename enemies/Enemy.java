@@ -2,6 +2,10 @@ package enemies;
 
 import java.util.Random;
 
+/**
+ * The base class for an enemy. This can be reused for
+ * most enemies just by creating them with different parameters.
+ */
 public class Enemy {
   private String name;
   private int hp;
@@ -41,7 +45,7 @@ public class Enemy {
 
   public int getAttackRating() {
     Random rng = new Random();
-    return (int)java.lang.Math.ceil(attackRating * ((rng.nextInt(20) + 90) / 100.0));
+    return (int)java.lang.Math.round(attackRating * ((rng.nextInt(20) + 90) / 100.0));
   }
 
   public void setAttackRating(int attackRating) {

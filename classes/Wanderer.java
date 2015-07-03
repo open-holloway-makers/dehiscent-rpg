@@ -4,6 +4,10 @@ import core.Player;
 import core.Stat;
 import items.*;
 
+/**
+ * An example class which further customises the Player
+ * with varying starting stats and equipment.
+ */
 public class Wanderer extends Player {
 
   public Wanderer() {
@@ -35,11 +39,15 @@ public class Wanderer extends Player {
 
     Weapon rock = new Weapon("Rock", 2, SlotType.HAND, null, 8, 0, Rating.U, Rating.U, Rating.U);
 
-    ruggedBoots.setLoreText("Strange boots from the ancient land of Zena, birthplace of the curious dealer Domhnall." +
-            "The inlaid silver rings symbolize an explorer.");
+    leatherTabbard.setLoreText("A tough leather overcoat, dirty and battered by the elements. " +
+            "It features some fine embroidery along its seams but it's worn out and barely noticeable " +
+            "anymore, much like the lord who once wore it.");
+    ruggedGreaves.setLoreText("Made of an itchy wool, these are probably no use to anyone.");
+    ruggedGloves.setLoreText("Thick textile gloves, better for gardening than anything else.");
+    ruggedBoots.setLoreText("Made of a mix of hides taken from animals known to survive in " +
+            "difficult climates, these are well suited to long treks over rough terrain.");
 
-    rock.setLoreText("Strange boots from the ancient land of Zena, birthplace of the curious dealer Domhnall." +
-            "The inlaid silver rings symbolize an explorer.");
+    rock.setLoreText("It's just a rock. You can talk to it when you're lonely but it will never reply.");
 
     obtain(rock);
     attemptToEquip(leatherTabbard);
