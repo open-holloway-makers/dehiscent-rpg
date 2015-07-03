@@ -81,9 +81,10 @@ All contributions should generally follow the version control workflow below. Th
 7. Stay up to date and pull in other peoples' changes which have made it into upstream, this will help avoid future conflicts
 
   ```
+  git remote add upstream https://github.com/open-holloway-makers/dehiscent-rpg.git
   git fetch upstream
   git checkout master
-  git merge upstream master
+  git rebase upstream/master
   ```
 
 8. When you're happy with the contributions you've added to your fork, submit a pull request on GitHub and wait for your additions to be accepted into upstream!
