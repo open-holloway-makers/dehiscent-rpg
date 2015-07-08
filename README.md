@@ -1,6 +1,6 @@
 # dehiscent-rpg
 
-An open dark fantasy rpg and world building experiment.
+An open source dark-fantasy rpg and world-building experiment.
 
 ### Running ###
 
@@ -14,10 +14,6 @@ Check out the Makefile for some useful configurations, but to just compile and r
 
 ##### What's Needed Now? #####
 
-As the game is still in its baby gro we're not accepting any major additions to mechanics for a while until the balance issues have settled down and the world has been fleshed out a bit more. However feel free to suggest any feature requests on the issues page so that they can be discussed by fellow contributers and considered for future iterations. 
-
-Check out the existing cells surrounding (0, 0) to get an idea of how the existing mechanics fit togeether. They're a bit rushed and lacking in content, but hopefully will give you a rough idea of how to create a cell, add items, enemies and merchants as well as resolving combat, transactions and some other tricks. 
-
 There are a few places where we really need contributions right now, these are:
   * Creating new cells and building the world!
   * Bug fixes and addressing balance issues (there are many!)
@@ -25,6 +21,8 @@ There are a few places where we really need contributions right now, these are:
   * Test suites and unit tests (there are none!)
   * A better (easier and more portable) way of running the game
   * This readme needs more jokes
+
+Feel free to suggest any feature requests on the issues page so that they can be discussed by fellow contributors and considered for future iterations. 
 
 Certain features are currently in progress and should be finished soon, so don't bother working on them yet- however any suggestions are welcome!
   * Saving and loading
@@ -37,6 +35,8 @@ Cells make up the various areas and rooms in Dehiscent and together generate a m
 To add a new cell, create a class which implements Blank Cell and then override the abstract methods and add your own logic. Then in the main class Dehiscent.java, add your cell and its coordinates to the createMap() function. Any coordinates which conflict with those of other contributers will simply be moved appropriately after a discussion with the author.
 
 The world is currently 32 x 32 cells, but can easily grow once it's filled up.
+  
+Check out the existing cells surrounding (0, 0) to get an idea of how the existing mechanics fit together. They're a bit rushed and lacking in content, but hopefully will give you a rough idea of how to create a cell, add items, enemies and merchants as well as resolving combat, transactions and some other tricks. 
 
 ##### Workflow #####
 
