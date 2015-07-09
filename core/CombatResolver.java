@@ -129,7 +129,7 @@ public class CombatResolver {
       if (!player.getEquipSlots().get(hands.get(i)).isFree()) {
         holding = player.getEquipSlots().get(hands.get(i)).getItem().getName();
       }
-      IO.print(IO.formatColumns(IO.BOX_WIDTH, i + ": " + hand, holding));
+      IO.print(IO.formatColumns(IO.BOX_WIDTH, true, true, i + ": " + hand, holding));
     }
     IO.println(IO.formatBanner(IO.BOX_WIDTH));
   }

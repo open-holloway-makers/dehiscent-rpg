@@ -147,7 +147,7 @@ public class TransactionResolver {
    */
   private static String affairsToString(Player player, Merchant merchant) {
     return "\b" + IO.formatBanner(IO.BOX_WIDTH) +
-            IO.formatColumns(IO.BOX_WIDTH, "You : " + player.getGold(),
+            IO.formatColumns(IO.BOX_WIDTH, true, true, "You : " + player.getGold(),
                     merchant.getGold() + " : " + merchant.getName()) +
             IO.formatBanner(IO.BOX_WIDTH);
   }
