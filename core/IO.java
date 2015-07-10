@@ -194,20 +194,6 @@ public class IO {
    * arguments provided.
    *
    * @param maxLineLength the width of the line.
-   * @param arguments the arguments (columns) to display.
-   * @return a formatted string containing the arguments as columns.
-   */
-  public static String formatColumns(int maxLineLength, Object... arguments) {
-    return formatColumns(maxLineLength, true, true, arguments);
-  }
-
-  /**
-   * Formats a line of values as if they are columns in a
-   * table. The width of the table will fit to the maxLineLength
-   * provided and the number of columns is equal to the object
-   * arguments provided.
-   *
-   * @param maxLineLength the width of the line.
    * @param alignLeft align the content of the middle columns to the left.
    * @param bordered print a border either side of the row.
    * @param arguments the arguments (columns) to display.

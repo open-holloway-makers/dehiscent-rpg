@@ -423,7 +423,7 @@ public abstract class Player {
       IntStream.range(0, possibleEquipSlots.size())
               .forEachOrdered(i ->
                       IO.print(IO.formatColumns(IO.BOX_WIDTH,
-                              i + ": " + possibleEquipSlots.get(i),
+                              true, true, i + ": " + possibleEquipSlots.get(i),
                               (getEquipSlots().get(possibleEquipSlots.get(i)).isFree()) ?
                                       "(empty)" :
                                       getEquipSlots()

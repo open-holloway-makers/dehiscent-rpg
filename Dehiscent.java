@@ -153,30 +153,30 @@ public class Dehiscent {
    */
   public static String controlsToString() {
     return IO.formatBanner(IO.BOX_WIDTH) +
-            IO.formatColumns(IO.BOX_WIDTH, "COMMAND", "HOTKEY", "EFFECT") +
+            IO.formatColumns(IO.BOX_WIDTH, true, true, "COMMAND", "HOTKEY", "EFFECT") +
             IO.formatBanner(IO.BOX_WIDTH) +
-            IO.formatColumns(IO.BOX_WIDTH, "go north", "w", "Go north") +
-            IO.formatColumns(IO.BOX_WIDTH, "go south", "a", "Go south") +
-            IO.formatColumns(IO.BOX_WIDTH, "go west", "s", "Go west") +
-            IO.formatColumns(IO.BOX_WIDTH, "go east", "d", "Go east") +
-            IO.formatColumns(IO.BOX_WIDTH, "explore", "x", "Explore the area") +
+            IO.formatColumns(IO.BOX_WIDTH, true, true, "go north", "w", "Go north") +
+            IO.formatColumns(IO.BOX_WIDTH, true, true, "go south", "a", "Go south") +
+            IO.formatColumns(IO.BOX_WIDTH, true, true, "go west", "s", "Go west") +
+            IO.formatColumns(IO.BOX_WIDTH, true, true, "go east", "d", "Go east") +
+            IO.formatColumns(IO.BOX_WIDTH, true, true, "explore", "x", "Explore the area") +
             IO.formatBanner(IO.BOX_WIDTH) +
-            IO.formatColumns(IO.BOX_WIDTH, "use <item>", "u", "Use an item") +
-            IO.formatColumns(IO.BOX_WIDTH, "equip <item>", "e", "Equip an item") +
-            IO.formatColumns(IO.BOX_WIDTH, "unequip <item>", "ue", "Unequip an item") +
-            IO.formatColumns(IO.BOX_WIDTH, "inspect <item>", "i", "Unequip an item") +
+            IO.formatColumns(IO.BOX_WIDTH, true, true, "use <item>", "u", "Use an item") +
+            IO.formatColumns(IO.BOX_WIDTH, true, true, "equip <item>", "e", "Equip an item") +
+            IO.formatColumns(IO.BOX_WIDTH, true, true, "unequip <item>", "ue", "Unequip an item") +
+            IO.formatColumns(IO.BOX_WIDTH, true, true, "inspect <item>", "i", "Unequip an item") +
             IO.formatBanner(IO.BOX_WIDTH) +
-            IO.formatColumns(IO.BOX_WIDTH, "view <options>", "v", "View summary of all") +
-            IO.formatColumns(IO.BOX_WIDTH, "  map", "", "Check the map") +
-            IO.formatColumns(IO.BOX_WIDTH, "  inv", "", "View inventory") +
-            IO.formatColumns(IO.BOX_WIDTH, "  equip", "", "See all equipped") +
-            IO.formatColumns(IO.BOX_WIDTH, "  current", "", "Inspect all equipped") +
-            IO.formatColumns(IO.BOX_WIDTH, "  position", "", "Check position") +
-            IO.formatColumns(IO.BOX_WIDTH, "  stats", "", "View stats") +
-            IO.formatColumns(IO.BOX_WIDTH, "  base", "", "View base stats") +
-            IO.formatColumns(IO.BOX_WIDTH, "  controls", "", "See this menu") +
+            IO.formatColumns(IO.BOX_WIDTH, true, true, "view <options>", "v", "View summary of all") +
+            IO.formatColumns(IO.BOX_WIDTH, true, true, "  map", "", "Check the map") +
+            IO.formatColumns(IO.BOX_WIDTH, true, true, "  inv", "", "View inventory") +
+            IO.formatColumns(IO.BOX_WIDTH, true, true, "  equip", "", "See all equipped") +
+            IO.formatColumns(IO.BOX_WIDTH, true, true, "  current", "", "Inspect all equipped") +
+            IO.formatColumns(IO.BOX_WIDTH, true, true, "  position", "", "Check position") +
+            IO.formatColumns(IO.BOX_WIDTH, true, true, "  stats", "", "View stats") +
+            IO.formatColumns(IO.BOX_WIDTH, true, true, "  base", "", "View base stats") +
+            IO.formatColumns(IO.BOX_WIDTH, true, true, "  controls", "", "See this menu") +
             IO.formatBanner(IO.BOX_WIDTH) +
-            IO.formatColumns(IO.BOX_WIDTH, "[0-9]", "", "Select menu options") +
+            IO.formatColumns(IO.BOX_WIDTH, true, true, "[0-9]", "", "Select menu options") +
             IO.formatBanner(IO.BOX_WIDTH);
   }
 }

@@ -63,10 +63,10 @@ public class Item {
     final int len = IO.BOX_WIDTH;
     return "\n" +
             IO.formatBanner(len) +
-            IO.formatColumns(len, getName(), getValue() + " gold") +
+            IO.formatColumns(len, true, true, getName(), getValue() + " gold") +
             IO.formatBanner(len) +
-            IO.formatColumns(len, "Equip to:", (isEquippable()) ? getSlotType().getValue().toString() : "n/a") +
-            IO.formatColumns(len, "Modifier:", (getModifiers().size() > 0) ? modifiersToString() : "n/a") +
+            IO.formatColumns(len, true, true, "Equip to:", (isEquippable()) ? getSlotType().getValue().toString() : "n/a") +
+            IO.formatColumns(len, true, true, "Modifier:", (getModifiers().size() > 0) ? modifiersToString() : "n/a") +
             IO.formatAsBox(getLoreText(), len, true);
   }
 

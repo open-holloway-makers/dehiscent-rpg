@@ -65,18 +65,18 @@ public class Weapon extends Item {
     final int len = IO.BOX_WIDTH;
     return "\n" +
             IO.formatBanner(len) +
-            IO.formatColumns(len, getName(), getValue() + " gold") +
+            IO.formatColumns(len, true, true, getName(), getValue() + " gold") +
             IO.formatBanner(len) +
-            IO.formatColumns(len, "Equip to:", (isEquippable()) ? getSlotType().getValue().toString() : "n/a") +
-            IO.formatColumns(len, "Modifier:", (getModifiers().size() > 0) ? modifiersToString() : "n/a") +
-            IO.formatColumns(len, "Physical Damage:", String.format("(%d)+%d", (int) getBaseDamage(),
+            IO.formatColumns(len, true, true, "Equip to:", (isEquippable()) ? getSlotType().getValue().toString() : "n/a") +
+            IO.formatColumns(len, true, true, "Modifier:", (getModifiers().size() > 0) ? modifiersToString() : "n/a") +
+            IO.formatColumns(len, true, true, "Physical Damage:", String.format("(%d)+%d", (int) getBaseDamage(),
                     (int) (getPhysicalAttackRating(player) - getBaseDamage()))) +
-            IO.formatColumns(len, "Magic Damage:", String.format("(%d)+%d", (int) getBaseMagicDamage(),
+            IO.formatColumns(len, true, true, "Magic Damage:", String.format("(%d)+%d", (int) getBaseMagicDamage(),
                     (int) (getMagicAttackRating(player) - getBaseMagicDamage()))) +
             IO.formatBanner(len) +
-            IO.formatColumns(len, "STR Scaling:", strengthScaling.getRating().toString()) +
-            IO.formatColumns(len, "DEX Scaling:", dexterityScaling.getRating().toString()) +
-            IO.formatColumns(len, "INT Scaling:", intelligenceScaling.getRating().toString()) +
+            IO.formatColumns(len, true, true, "STR Scaling:", strengthScaling.getRating().toString()) +
+            IO.formatColumns(len, true, true, "DEX Scaling:", dexterityScaling.getRating().toString()) +
+            IO.formatColumns(len, true, true, "INT Scaling:", intelligenceScaling.getRating().toString()) +
             IO.formatAsBox(getLoreText(), len, true);
   }
 }
